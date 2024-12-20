@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'mymovies_com.urls'
@@ -68,10 +68,6 @@ TEMPLATES = [
         },
     },
 ]
-
-SIMPLE_JWT = {
-'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=3)
-}
 
 WSGI_APPLICATION = 'mymovies_com.wsgi.application'
 
@@ -134,3 +130,7 @@ REST_FRAMEWORK = {
 'rest_framework.authentication.BasicAuthentication',
 )
 }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=3)
+} 

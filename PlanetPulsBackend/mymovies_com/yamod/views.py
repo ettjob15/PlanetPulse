@@ -19,7 +19,7 @@ class GenreViewSet(viewsets.ModelViewSet):
     queryset = models.Genre.objects.all()
     serializer_class = GenreSerializer
 
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request):
         '''
@@ -92,7 +92,7 @@ class PersonViewSet(viewsets.ModelViewSet):
     queryset = models.Person.objects.all()
     serializer_class = PersonSerializer
 
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def list(self, request):
         '''
@@ -138,9 +138,12 @@ class MovieViewSet(viewsets.ModelViewSet):
     '''
     Simple movie list API
     '''
-    permission_classes = [IsAuthenticated]
+
     queryset = models.Movie.objects.filter(visible=True)
     serializer_class = MovieSerializer
+    
+    permission_classes = [IsAuthenticated]
+
 
     def create(self, request, *args, **kwargs):
         '''
@@ -187,6 +190,9 @@ class MovieViewSet(viewsets.ModelViewSet):
         order_by = request.GET.get("order[0][column]","rank")
         # Build filtered movie list
         mv = models.Movie.objects.filter(visible=True)
+
+        if not request.user.is_superuser:
+            mv = mv.filter(black_and_white=True)
         # we only allow searches, if we have more than 3 characters:
         if search_value and len(search_value)>3:
             # we add a .distinct to the query - the many to many relations would produce
@@ -260,3 +266,4 @@ class MovieViewSet(viewsets.ModelViewSet):
                 "revenue" : revenue,
                 "black_and_white": movie.black_and_white
                 }
+    
