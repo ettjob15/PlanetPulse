@@ -13,7 +13,7 @@ export class AboutUsComponent {
     {
       name: 'Ettl Jörg',
       position: 'Project Leader: Polution Map',
-      description: 'Jörg is a dedicated IT student with a passion for software development and modern technologies. He discovered his love for programming at an early age and is now deeply engaged in both the theoretical and practical aspects of computer science. He is particularly passionate about developing innovative solutions in web and app development. Alongside his studies, he has worked on various projects, gaining valuable experience with current frameworks and programming languages such as JavaScript, Python, and React. Jörg is always looking for new challenges and is determined to shape the future of technology.',
+      description: 'Jörg is a dedicated IT student with a passion for software development and modern technologies. He discovered his love for programming at an early age and is now deeply engaged in both the theoretical and practical aspects of computer science. He is particularly passionate about developing innovative solutions in web and app development. Alongside his studies, he has worked on various projects, gaining valuable experience with current frameworks and programming languages such as JavaScript, Python, and Angular. Jörg is always looking for new challenges and is determined to shape the future of technology.',
       image: '/assets/joerg.jpg'
     },
     {
