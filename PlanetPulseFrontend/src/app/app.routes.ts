@@ -5,6 +5,7 @@ import { ImprintComponent } from './imprint/imprint.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { AboutUsComponent } from './about-us/about-us.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/polution-map', pathMatch: 'full' },
@@ -14,4 +15,5 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'register', component: RegisterComponent},
   { path: 'userprofile', component: UserProfileComponent},
+  { path: 'aboutUs', component: AboutUsComponent},
 ];

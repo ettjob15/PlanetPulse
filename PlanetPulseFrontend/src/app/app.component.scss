@@ -1,0 +1,73 @@
+.custom-toolbar {
+    height: 80px;
+    /* Toolbar-Höhe */
+    display: flex;
+    align-items: center;
+}
+
+/* Desktop-Menü standardmäßig anzeigen */
+.desktop-menu {
+    display: flex;
+    gap: 15px;
+    /* Abstand zwischen Buttons */
+}
+
+/* Hamburger-Menü für kleine Bildschirme anzeigen */
+.mobile-menu {
+    display: none;
+}
+
+/* Für kleine Bildschirme (Handys) */
+@media (max-width: 768px) {
+    .desktop-menu {
+        display: none;
+        /* Desktop-Menü ausblenden */
+    }
+
+    .mobile-menu {
+        display: block;
+        /* Hamburger-Menü anzeigen */
+    }
+}
+
+.footer-toolbar {
+    color: black; /* Text color */
+    display: flex;
+    flex-direction: column; /* Inhalte untereinander anordnen */
+    align-items: center; /* Zentriert alle Elemente horizontal */
+    padding: 10px 20px;
+}
+
+.footer-copyright {
+    margin: 5px 0;
+}
+
+.footer-links a {
+    color: black;
+    text-decoration: none;
+    margin-right: 15px;
+    justify-content: center;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+    /* Hover-Effekt */
+}
+
+.social-icons a {
+    color: black;
+    margin-right: 10px;
+}
+
+mat-icon {
+    font-size: 24px;
+    /* Größe der Social Icons */
+}
+
+.footer-copyright {
+    text-align: center;
+    flex-basis: 100%;
+    /* Vollbreite für kleinere Bildschirme */
+    margin-top: 10px;
+    font-size: 0.9rem;
+}

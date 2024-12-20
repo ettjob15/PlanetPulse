@@ -1,13 +1,44 @@
-<mat-toolbar color="primary">
-
-  <button mat-button [matMenuTriggerFor]="movieMenu">Menu</button>
+<mat-toolbar color="primary" class="custom-toolbar">
+  
+  <img src="/assets/logo.png" alt="Logo" style="height: 80px; margin-right: auto;" />
+  <img src="/assets/logo.png" alt="Profile" 
+       style="height: 60px; width: 60px; border-radius: 50%; margin-right: 10px;" />
+  <button mat-icon-button [matMenuTriggerFor]="movieMenu" class="mobile-menu">
+    <mat-icon>menu</mat-icon>
+  </button>
   <mat-menu #movieMenu="matMenu">
     <button mat-menu-item routerLink="login">Login</button>
-    <button mat-menu-item routerLink="register">Register</button>
+    <button mat-menu-item routerLink="register">Register</button> 
     <button mat-menu-item>Logout</button>
     <button mat-menu-item routerLink="calculator">Co2 Calculator</button>
     <button mat-menu-item routerLink="userprofile">My Profile</button>
   </mat-menu>
 
+  <div class="desktop-menu">
+    <button mat-button routerLink="login">Login</button>
+    <button mat-button routerLink="register">Register</button>
+    <button mat-button>Logout</button>
+    <button mat-button routerLink="calculator">Co2 Calculator</button>
+    <button mat-button routerLink="userprofile">My Profile</button>
+  </div>
 </mat-toolbar>
+
+
+
 <router-outlet></router-outlet>
+
+
+
+
+<mat-toolbar color="primary" class="footer-toolbar">
+  <!-- Navigation Links -->
+  <div class="footer-links">
+    <a mat-button routerLink="aboutUs">About Us</a>
+    <a mat-button routerLink="imprint">Imprint</a>
+
+  </div>
+  <!-- Copyright -->
+  <div class="footer-copyright">
+    &copy; {{ currentYear }} PlanetPulse. All rights reserved.
+  </div>
+</mat-toolbar>
