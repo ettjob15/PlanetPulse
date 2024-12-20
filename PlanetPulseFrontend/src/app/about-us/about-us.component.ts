@@ -19,7 +19,7 @@ export class AboutUsComponent {
     {
       name: 'Brander Vega Asta Esther',
       position: 'Member: Pollution Map',
-      description: 'Jane leads the technology department, ensuring that our systems and products are always cutting-edge.',
+      description: 'Vega lives life at the bleeding-edge. Mostly to her own detrement',
       image: '/assets/vega.jpg'
     },
     {
