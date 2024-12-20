@@ -1,8 +1,10 @@
 <mat-toolbar color="primary" class="custom-toolbar">
   
   <img src="/assets/logo.png" alt="Logo" style="height: 80px; margin-right: auto;" />
-  <img src="/assets/logo.png" alt="Profile" 
-       style="height: 60px; width: 60px; border-radius: 50%; margin-right: 10px;" />
+  <button mat-menu-item routerLink="userprofile" class="rounded-button">
+    <img src="/assets/logo.png" alt="Profile" class="profile-img" style="height: 60px;width: 60px;"/>
+  </button>
+  
   <button mat-icon-button [matMenuTriggerFor]="movieMenu" class="mobile-menu">
     <mat-icon>menu</mat-icon>
   </button>
@@ -11,7 +13,6 @@
     <button mat-menu-item routerLink="register">Register</button> 
     <button mat-menu-item>Logout</button>
     <button mat-menu-item routerLink="calculator">Co2 Calculator</button>
-    <button mat-menu-item routerLink="userprofile">My Profile</button>
   </mat-menu>
 
   <div class="desktop-menu">
@@ -19,7 +20,6 @@
     <button mat-button routerLink="register">Register</button>
     <button mat-button>Logout</button>
     <button mat-button routerLink="calculator">Co2 Calculator</button>
-    <button mat-button routerLink="userprofile">My Profile</button>
   </div>
 </mat-toolbar>
 

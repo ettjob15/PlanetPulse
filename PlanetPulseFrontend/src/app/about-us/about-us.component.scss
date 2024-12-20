@@ -1,0 +1,45 @@
+/* Styling for the team page */
+.team-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px;
+  }
+  
+  .team-member {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    width: 250px;
+    margin: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .member-image img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-bottom: 3px solid #3f51b5;
+  }
+  
+  .member-details {
+    padding: 15px;
+  }
+  
+  .member-details h3 {
+    font-size: 20px;
+    color: #3f51b5;
+  }
+  
+  .member-details p {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .toolbar {
+    text-align: center;
+    padding: 10px;
+    justify-content: center;
+  }
+  

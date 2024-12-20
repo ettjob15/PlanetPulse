@@ -1,1 +1,18 @@
-<p>Deny, Depose, Defend</p>
+<mat-toolbar color="primary" class="toolbar">
+    <span>Our Team</span>
+</mat-toolbar>
+
+<div class="team-container">
+    @for (member of teamMembers; track $index) {
+    <div class="team-member">
+        <div class="member-image">
+            <img [src]="member.image" alt="{{ member.name }}'s Picture">
+        </div>
+        <div class="member-details">
+            <h3>{{ member.name }}</h3>
+            <p>{{ member.position }}</p>
+            <p>{{ member.description }}</p>
+        </div>
+    </div>
+    }
+</div>

@@ -20,7 +20,18 @@
         display: block;
     }
 }
-
+.rounded-button {
+    height: 60px;
+    width: 60px;
+    padding: 0; 
+    border-radius: 50%; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent; /* Hintergrund transparent */
+    border: none; /* Kein Rand */
+  }
+  
 .footer-toolbar {
     color: black; 
     display: flex;
