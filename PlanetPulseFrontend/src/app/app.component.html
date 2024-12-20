@@ -1,13 +1,12 @@
 <mat-toolbar color="primary">
 
-  <button mat-button [matMenuTriggerFor]="movieMenu">Movies</button>
+  <button mat-button [matMenuTriggerFor]="movieMenu">Menu</button>
   <mat-menu #movieMenu="matMenu">
-    <button mat-menu-item routerLink="movie-list">Login</button>
-    <button mat-menu-item routerLink="movie-form">Register</button>
-    <button mat-menu-item routerLink="movie-form">Co2 Calculator</button>
-    <button mat-menu-item routerLink="movie-form"></button>
-    <button mat-menu-item>Logout
-    </button>
+    <button mat-menu-item routerLink="login">Login</button>
+    <button mat-menu-item routerLink="register">Register</button>
+    <button mat-menu-item>Logout</button>
+    <button mat-menu-item routerLink="calculator">Co2 Calculator</button>
+    <button mat-menu-item routerLink="userprofile">My Profile</button>
   </mat-menu>
 
 </mat-toolbar>
