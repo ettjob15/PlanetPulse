@@ -1,0 +1,50 @@
+h1 {
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 16px;
+    color: #333;
+  }
+  
+  mat-dialog-content {
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  
+  mat-dialog-actions {
+    display: flex;
+    justify-content: center; /* Centers the button horizontally */
+    margin-top: 16px; /* Adds some spacing above the button */
+  
+    button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      text-transform: uppercase;
+      background-color: #007bff; /* Blue button color */
+      color: #fff;
+      border: none;
+      border-radius: 24px; /* Rounded button design */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+      }
+  
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Focus effect */
+      }
+    }
+  }
+  
+  mat-dialog-container {
+    border-radius: 16px; /* Rounded corners for the dialog box */
+    background-color: #fffaf2; /* Light, subtle background */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    padding: 24px;
+    max-width: 400px; /* Restrict the dialog box width */
+    margin: 0 auto; /* Ensure it is centered on the screen */
+  }
+  
+  

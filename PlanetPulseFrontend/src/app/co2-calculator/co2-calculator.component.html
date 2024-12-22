@@ -1,1 +1,54 @@
-<p>co2-calculator works!</p>
+<div class="co2-calculator-container">
+    <div class="calculator-form">
+      <h2>CO2 Calculator</h2>
+      <form>
+        <mat-form-field appearance="outline">
+          <mat-label>From</mat-label>
+          <input matInput [(ngModel)]="from" name="from" required>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>To</mat-label>
+          <input matInput [(ngModel)]="to" name="to" required>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Distance traveled (km)</mat-label>
+          <input matInput type="number" [(ngModel)]="distance" name="distance" required min="0">
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Mode of transport</mat-label>
+          <mat-select [(ngModel)]="mode" name="mode" required>
+            <mat-option value="car">Car</mat-option>
+            <mat-option value="bus">Bus</mat-option>
+            <mat-option value="train">Train</mat-option>
+            <mat-option value="flight">Flight</mat-option>
+            <mat-option value="tram">Tram</mat-option>
+            <mat-option value="velo">Velo</mat-option>
+            <mat-option value="truck">Truck</mat-option>
+            <mat-option value="boat">Boat</mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <div class="button-group">
+          <button mat-raised-button color="primary" type="button" (click)="switchFields()">Switch</button>
+          <button mat-raised-button color="accent" type="button" (click)="calculateCO2()">Calculate CO2</button>
+        </div>
+      </form>
+    </div>
+  
+    <div class="history-section">
+      <h3>History</h3>
+      <mat-list>
+        <mat-list-item *ngFor="let item of history">
+          <div>
+            From: {{ item.from }} | To: {{ item.to }} | Distance: {{ item.distance }} km | 
+            Mode: {{ item.mode }} | CO2: {{ item.co2 }} kg
+          </div>
+        </mat-list-item>
+      </mat-list>      
+    </div>
+  </div>
+  
+  

@@ -1,0 +1,83 @@
+.co2-calculator-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 16px;
+  }
+  
+  .calculator-form {
+    flex: 1;
+    max-width: 400px;
+  
+    h2 {
+      text-align: center;
+      font-size: 1.8rem;
+      color: #333;
+      margin-bottom: 16px;
+    }
+  
+    mat-form-field {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+  
+    .button-group {
+      display: flex;
+      gap: 16px;
+  
+      button {
+        flex: none;
+        padding: 12px 24px;
+        font-size: 1rem;
+        border-radius: 24px;
+        text-transform: none;
+        background-color: #007bff;
+        color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+  
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+    }
+  }
+  
+  .history-section {
+    flex: 1;
+    max-width: 500px; /* Increased width for better readability */
+    min-height: 300px; /* Increased height for more visible data */
+  
+    h3 {
+      text-align: center;
+      font-size: 1.6rem;
+      color: #333;
+      margin-bottom: 16px;
+    }
+  
+    mat-list {
+      background-color: #f9f9f9;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      max-height: 500px; /* Increased max height for more space */
+      overflow-y: auto; /* Enable vertical scrolling for long history */
+    }
+  
+    mat-list-item {
+      font-size: 1rem;
+      padding: 8px 0;
+      border-bottom: 1px solid #ddd;
+      white-space: normal; /* Allow text to wrap */
+      word-wrap: break-word; /* Break long words if necessary */
+      overflow: visible; /* Ensure no content is hidden */
+      display: block; /* Ensures each item takes full width and wraps properly */
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+  
+  
