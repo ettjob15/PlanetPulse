@@ -1,54 +1,52 @@
-<div class="co2-calculator-container">
-    <div class="calculator-form">
-      <h2>CO2 Calculator</h2>
-      <form>
-        <mat-form-field appearance="outline">
-          <mat-label>From</mat-label>
-          <input matInput [(ngModel)]="from" name="from" required>
-        </mat-form-field>
-  
-        <mat-form-field appearance="outline">
-          <mat-label>To</mat-label>
-          <input matInput [(ngModel)]="to" name="to" required>
-        </mat-form-field>
-  
-        <mat-form-field appearance="outline">
-          <mat-label>Distance traveled (km)</mat-label>
-          <input matInput type="number" [(ngModel)]="distance" name="distance" required min="0">
-        </mat-form-field>
-  
-        <mat-form-field appearance="outline">
-          <mat-label>Mode of transport</mat-label>
-          <mat-select [(ngModel)]="mode" name="mode" required>
-            <mat-option value="car">Car</mat-option>
-            <mat-option value="bus">Bus</mat-option>
-            <mat-option value="train">Train</mat-option>
-            <mat-option value="flight">Flight</mat-option>
-            <mat-option value="tram">Tram</mat-option>
-            <mat-option value="velo">Velo</mat-option>
-            <mat-option value="truck">Truck</mat-option>
-            <mat-option value="boat">Boat</mat-option>
-          </mat-select>
-        </mat-form-field>
-  
-        <div class="button-group">
-          <button mat-raised-button color="primary" type="button" (click)="switchFields()">Switch</button>
-          <button mat-raised-button color="accent" type="button" (click)="calculateCO2()">Calculate CO2</button>
-        </div>
-      </form>
-    </div>
-  
-    <div class="history-section">
-      <h3>History</h3>
-      <mat-list>
-        <mat-list-item *ngFor="let item of history">
-          <div>
-            From: {{ item.from }} | To: {{ item.to }} | Distance: {{ item.distance }} km | 
-            Mode: {{ item.mode }} | CO2: {{ item.co2 }} kg
-          </div>
-        </mat-list-item>
-      </mat-list>      
-    </div>
+<div class="co2-calculator-container" style="display: flex; justify-content: space-between; gap: 20px; padding: 20px;">
+  <div class="calculator-form" style="flex: 1; max-width: 40%;">
+    <h2>CO2 Calculator</h2>
+    <form>
+      <mat-form-field appearance="outline">
+        <mat-label>From</mat-label>
+        <input matInput [(ngModel)]="from" name="from" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>To</mat-label>
+        <input matInput [(ngModel)]="to" name="to" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Distance traveled (km)</mat-label>
+        <input matInput type="number" [(ngModel)]="distance" name="distance" required min="0">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Mode of transport</mat-label>
+        <mat-select [(ngModel)]="mode" name="mode" required>
+          <mat-option value="car">Car</mat-option>
+          <mat-option value="bus">Bus</mat-option>
+          <mat-option value="train">Train</mat-option>
+          <mat-option value="flight">Flight</mat-option>
+          <mat-option value="tram">Tram</mat-option>
+          <mat-option value="velo">Velo</mat-option>
+          <mat-option value="truck">Truck</mat-option>
+          <mat-option value="boat">Boat</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="button-group">
+        <button mat-raised-button color="primary" type="button" (click)="switchFields()">Switch</button>
+        <button mat-raised-button color="accent" type="button" (click)="calculateCO2()">Calculate CO2</button>
+      </div>
+    </form>
   </div>
-  
-  
+
+  <div class="history-section" style="flex: 2; max-width: 60%; overflow: auto; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;">
+    <h3 style="text-align: center;">History</h3>
+    <mat-list>
+      <mat-list-item *ngFor="let item of history" style="word-wrap: break-word; margin-bottom: 10px;">
+        <div>
+          From: {{ item.from }} | To: {{ item.to }} | Distance: {{ item.distance }} km | 
+          Mode: {{ item.mode }} | CO2: {{ item.co2 }} kg
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </div>
+</div>
