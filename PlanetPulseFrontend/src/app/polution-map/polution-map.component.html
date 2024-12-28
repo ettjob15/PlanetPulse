@@ -1,1 +1,22 @@
-<p>polution-map works!</p>
+<!-- map.component.html -->
+<div class="search-bar">
+    type="text" 
+    [value]="cityName()" 
+    (input)="cityName.set($any($event.target).value)" 
+    placeholder="Enter city name" 
+    (keyup.enter)="searchCity()" 
+  />
+  <button (click)="searchCity()">Search</button>
+  </div>
+  
+  <div class="info">
+    @if (airQualityIndex !== null) {
+        <p>Air Quality Index (AQI) for {{ cityName() }}: <strong>{{ airQualityIndex() }}</strong></p>
+      } @else {
+        <p>AQI data not available.</p>
+      }
+      
+  
+  <!-- This is where the Leaflet map will be rendered -->
+  <div id="map" style="height: 500px;"></div>
+  
