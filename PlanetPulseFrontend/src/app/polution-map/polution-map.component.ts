@@ -22,10 +22,17 @@ export class PolutionMapComponent {
   ngOnInit() {
     this.initializeMap();
   }
-
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 0);
+  }
+  
+  
   initializeMap() {
     this.map = L.map('map').setView([48.8566, 2.3522], 4);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 20,
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
   }
@@ -60,9 +67,14 @@ export class PolutionMapComponent {
 
     if (this.marker) {
       this.map.removeLayer(this.marker);
+      this.map.invalidateSize();
+
     }
     // Add a new marker at the specified location
     this.marker = L.marker([lat, lon]).addTo(this.map);
+    this.map.invalidateSize();
+
   }
+
 }
 
