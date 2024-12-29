@@ -21,6 +21,7 @@ export class PolutionMapComponent {
 
   ngOnInit() {
     this.initializeMap();
+    this.autoLocateUser();
   }
   ngAfterViewInit() {
     setTimeout(() => {
@@ -35,6 +36,39 @@ export class PolutionMapComponent {
       maxZoom: 20,
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
+  }
+
+  autoLocateUser() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          // 1. Move the map + add marker
+          this.updateMapLocation(lat, lon);
+
+          // 2. Fetch the air pollution data
+          this.openWeatherService.getAirPollution(lat, lon).subscribe({
+            next: (pollutionData) => {
+              this.airQualityIndex.set(pollutionData.list[0].main.aqi);
+            },
+            error: (err) => console.error('Error fetching pollution data', err),
+          });
+
+          // (Optional) If you want to set a "cityName" from coords, 
+          // you can reverse-geocode here or fetch from OpenWeather 
+          // geo reverse endpoint to display the cityName in UI.
+
+        },
+        (error) => {
+          console.error('Error getting location', error);
+          // Fall back to your default location or do nothing
+        }
+      );
+    } else {
+      console.error('Geolocation not supported in this browser.');
+    }
   }
 
   searchCity() {
