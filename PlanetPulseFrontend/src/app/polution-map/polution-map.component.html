@@ -13,13 +13,10 @@
     @if (cityNotFound()) {
       <p>City not found. Please enter a valid city name.</p>
     } @else if (airQualityIndex !== null) {
-      <p>Air Quality Index (AQI) for {{ cityName() }}: <strong>{{ airQualityIndex() }}</strong></p>
+      <p>Air Quality Index (AQI) for {{ cityNameDisplay() }}: <strong>{{ airQualityIndex() }}</strong></p>
     }@else {
     <p>AQI data not available.</p>
     }
-
-
-
     <div id="map"></div>
     <br>
     <div class="aqi-table">

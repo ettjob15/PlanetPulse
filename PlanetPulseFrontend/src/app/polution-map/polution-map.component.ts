@@ -13,10 +13,12 @@ import { OpenweatherService } from '../services/openweather.service';
 })
 export class PolutionMapComponent {
   cityName = signal('');
+  cityNameDisplay = signal('');
   airQualityIndex = signal<number | null>(null);
   cityNotFound = signal(false);
   map!: L.Map;
   marker!: L.Marker;
+  aqiCircle!: L.Circle; 
 
   constructor(private openWeatherService: OpenweatherService) { }
 
@@ -45,10 +47,13 @@ export class PolutionMapComponent {
         (position) => {
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
+
           this.updateMapLocation(lat, lon);
           this.openWeatherService.getAirPollution(lat, lon).subscribe({
             next: (pollutionData) => {
               this.airQualityIndex.set(pollutionData.list[0].main.aqi);
+
+              this.drawAqiCircle(lat, lon, this.airQualityIndex()!);
             },
             error: (err) => console.error('Error fetching pollution data', err),
           });
@@ -56,7 +61,6 @@ export class PolutionMapComponent {
         },
         (error) => {
           console.error('Error getting location', error);
-          // Fall back to your default location or do nothing
         }
       );
     } else {
@@ -64,10 +68,47 @@ export class PolutionMapComponent {
     }
   }
 
+  drawAqiCircle(lat: number, lon: number, aqi: number) {
+    let circleColor = 'green'; // default 
+    switch (aqi) {
+      case 1:
+        circleColor = 'green';
+        break;
+      case 2:
+        circleColor = 'yellow';
+        break;
+      case 3:
+        circleColor = 'orange';
+        break;
+      case 4:
+        circleColor = 'red';
+        break;
+      case 5:
+        circleColor = 'purple';
+        break;
+      default:
+        circleColor = 'gray'; 
+        break;
+    }
+  
+    if (this.aqiCircle) {
+      this.map.removeLayer(this.aqiCircle);
+    }
+  
+    this.aqiCircle = L.circle([lat, lon], {
+      color: circleColor,     
+      fillColor: circleColor,  
+      fillOpacity: 0.3,
+      radius: 5000             
+    });
+  
+    this.aqiCircle.addTo(this.map);
+  }
+
   searchCity() {
     const city = this.cityName();
     if (!city) return;
-
+    this.cityNameDisplay.set(city);
     this.openWeatherService.getCityCoordinates(city).subscribe({
       next: (res) => {
         if (res && res.length > 0) {
@@ -79,6 +120,7 @@ export class PolutionMapComponent {
             next: (pollutionData) => {
               // OpenWeather structure => pollutionData.list[0].main.aqi
               this.airQualityIndex.set(pollutionData.list[0].main.aqi);
+              this.drawAqiCircle(lat, lon, this.airQualityIndex()!);
             },
             error: (err) => console.error(err),
           });
