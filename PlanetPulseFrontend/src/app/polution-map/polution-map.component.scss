@@ -21,4 +21,43 @@
     text-align: center;
 
   }
-  
+  .aqi-table {
+    margin-top: 20px;
+    width: 70vw;
+    height: 30vw; 
+    position: relative;
+    margin: 0 auto;
+  }
+  .aqi-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .aqi-table th, .aqi-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  .aqi-table th {
+    background-color: #f4f4f4;
+  }
+    /* Farbcodierung für die Indizes */
+    .index-1 {
+      background-color: #00FF00; /* Grün */
+      color: #000;
+    }
+    .index-2 {
+      background-color: #FFFF00; /* Gelb */
+      color: #000;
+    }
+    .index-3 {
+      background-color: #FFA500; /* Orange */
+      color: #000;
+    }
+    .index-4 {
+      background-color: #FF0000; /* Rot */
+      color: #FFF;
+    }
+    .index-5 {
+      background-color: #800080; /* Lila */
+      color: #FFF;
+    }
