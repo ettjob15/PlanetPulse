@@ -102,7 +102,6 @@ export class PolutionMapComponent {
     if (this.marker) {
       this.map.removeLayer(this.marker);
       this.map.invalidateSize();
-
     }
     // Add a new marker at the specified location
     this.marker = L.marker([lat, lon]).addTo(this.map);
