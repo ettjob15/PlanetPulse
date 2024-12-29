@@ -77,7 +77,7 @@
     background-color: #f9f9f9;
     border: 2px solid #28a745; 
     border-radius: 10px;
-    padding: 1vh 1vw;
+    padding: 1vh 15px;
     color: #28a745;
     font-weight: bold;
     font-size: 1.2rem;
@@ -193,6 +193,8 @@
 
     .aqi-bubble {
       margin-top: 1rem;
+      align-items: center;
+      justify-content: center;
     }
 
     .aqi-bubble h2 {
@@ -204,6 +206,7 @@
       font-size: 1rem;
       border-color: #353535;
       border-style: solid;
+      
     }
 
     .aqi-bubble h2:hover {
@@ -240,6 +243,7 @@
 
     .toggle-icon {
       float: right;
+      padding: 2px 2px;
     }
 
     .text-yellow {
