@@ -1,5 +1,4 @@
 <mat-toolbar color="primary" class="custom-toolbar">
-  
   <img src="/assets/logo.png" alt="Logo" style="height: 80px; margin-right: auto;" />
   <button mat-menu-item routerLink="userprofile" class="rounded-button">
     <img src="/assets/logo.png" alt="Profile" class="profile-img" style="height: 60px;width: 60px;"/>
@@ -9,6 +8,7 @@
     <mat-icon>menu</mat-icon>
   </button>
   <mat-menu #movieMenu="matMenu">
+    <button mat-menu-item routerLink="polution-map">Home</button>
     <button mat-menu-item routerLink="login">Login</button>
     <button mat-menu-item routerLink="register">Register</button> 
     <button mat-menu-item>Logout</button>
@@ -16,6 +16,7 @@
   </mat-menu>
 
   <div class="desktop-menu">
+    <button mat-button routerLink="polution-map">Home</button>
     <button mat-button routerLink="login">Login</button>
     <button mat-button routerLink="register">Register</button>
     <button mat-button>Logout</button>

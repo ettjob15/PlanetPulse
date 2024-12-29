@@ -1,31 +1,27 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <div>
-<!-- map.component.html -->
-<div class="search-bar">
+  <!-- map.component.html -->
+  <div class="search-bar">
 
-    <input
-    type="text" 
-    [value]="cityName()" 
-    (input)="cityName.set($any($event.target).value)" 
-    placeholder="Enter city name" 
-    (keyup.enter)="searchCity()" 
-  />
-  <button (click)="searchCity()">Search</button>
+    <input type="text" [value]="cityName()" (input)="filterInput($event)" placeholder="Enter city name"
+      (keyup.enter)="searchCity()" />
+    <button (click)="searchCity()">Search</button>
   </div>
-  
+
   <div class="info">
-    @if (airQualityIndex !== null) {
-        <p>Air Quality Index (AQI) for {{ cityName() }}: <strong>{{ airQualityIndex() }}</strong></p>
-      } @else {
-        <p>AQI data not available.</p>
-      }
-      
-  
+    @if (cityNotFound()) {
+      <p>City not found. Please enter a valid city name.</p>
+    } @else if (airQualityIndex !== null) {
+      <p>Air Quality Index (AQI) for {{ cityName() }}: <strong>{{ airQualityIndex() }}</strong></p>
+    }@else {
+    <p>AQI data not available.</p>
+    }
+
+
 
     <div id="map"></div>
-<br>
+    <br>
     <div class="aqi-table">
       <h2>Air Quality Index (AQI) Table</h2>
       <table>
@@ -57,7 +53,8 @@
             <td>[20; 50)</td>
             <td>[10; 25)</td>
             <td>[4400; 9400)</td>
-            <td>Air quality is acceptable. However, there may be a risk for some people, particularly those who are unusually sensitive to air pollution.</td>
+            <td>Air quality is acceptable. However, there may be a risk for some people, particularly those who are
+              unusually sensitive to air pollution.</td>
           </tr>
           <tr class="index-3">
             <td>Moderate</td>
@@ -66,7 +63,8 @@
             <td>[50; 100)</td>
             <td>[25; 50)</td>
             <td>[9400; 12400)</td>
-            <td>Members of sensitive groups may experience health effects. The general public is less likely to be affected.</td>
+            <td>Members of sensitive groups may experience health effects. The general public is less likely to be
+              affected.</td>
           </tr>
           <tr class="index-4">
             <td>Poor</td>
@@ -75,7 +73,8 @@
             <td>[100; 200)</td>
             <td>[50; 75)</td>
             <td>[12400; 15400)</td>
-            <td>Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects.</td>
+            <td>Some members of the general public may experience health effects; members of sensitive groups may
+              experience more serious health effects.</td>
           </tr>
           <tr class="index-5">
             <td>Very Poor</td>
@@ -92,5 +91,4 @@
   </div>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-crossorigin=""></script>
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>

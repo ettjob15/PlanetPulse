@@ -14,10 +14,11 @@ import { OpenweatherService } from '../services/openweather.service';
 export class PolutionMapComponent {
   cityName = signal('');
   airQualityIndex = signal<number | null>(null);
+  cityNotFound = signal(false);
   map!: L.Map;
   marker!: L.Marker;
 
-  constructor(private openWeatherService: OpenweatherService) {}
+  constructor(private openWeatherService: OpenweatherService) { }
 
   ngOnInit() {
     this.initializeMap();
@@ -28,8 +29,8 @@ export class PolutionMapComponent {
       this.map.invalidateSize();
     }, 0);
   }
-  
-  
+
+
   initializeMap() {
     this.map = L.map('map').setView([48.8566, 2.3522], 4);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -44,21 +45,13 @@ export class PolutionMapComponent {
         (position) => {
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
-
-          // 1. Move the map + add marker
           this.updateMapLocation(lat, lon);
-
-          // 2. Fetch the air pollution data
           this.openWeatherService.getAirPollution(lat, lon).subscribe({
             next: (pollutionData) => {
               this.airQualityIndex.set(pollutionData.list[0].main.aqi);
             },
             error: (err) => console.error('Error fetching pollution data', err),
           });
-
-          // (Optional) If you want to set a "cityName" from coords, 
-          // you can reverse-geocode here or fetch from OpenWeather 
-          // geo reverse endpoint to display the cityName in UI.
 
         },
         (error) => {
@@ -72,13 +65,14 @@ export class PolutionMapComponent {
   }
 
   searchCity() {
-    const city = this.cityName(); 
+    const city = this.cityName();
     if (!city) return;
 
     this.openWeatherService.getCityCoordinates(city).subscribe({
       next: (res) => {
         if (res && res.length > 0) {
           const { lat, lon } = res[0];
+          this.cityNotFound.set(false);
           this.updateMapLocation(lat, lon);
 
           this.openWeatherService.getAirPollution(lat, lon).subscribe({
@@ -89,6 +83,7 @@ export class PolutionMapComponent {
             error: (err) => console.error(err),
           });
         } else {
+          this.cityNotFound.set(true);
           console.error('City not found');
         }
       },
@@ -108,6 +103,9 @@ export class PolutionMapComponent {
     this.map.invalidateSize();
 
   }
-
+  filterInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.cityName.set(inputElement.value); // cityName aktualisieren
+  }
 }
 
