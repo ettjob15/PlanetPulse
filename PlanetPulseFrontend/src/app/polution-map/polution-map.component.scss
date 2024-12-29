@@ -1,41 +1,165 @@
 
 .search-bar {
-    margin-bottom: 1rem;
-    margin: 0 auto;
+  margin: 1rem auto;
+  display: flex;
+  flex-wrap: wrap; 
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding-left: 15vw;
+  padding-right: 15vw;
+}
+
+.search-bar input {
+  width: 30vw;
+  height: 5vh;
+  font-size: 1.2rem;
+  padding: 0 1rem;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.search-bar input:focus {
+  border-color: #28ee00;
+}
+.search-container {
+  display: flex;
+  align-items: center;
+  width: 30vw;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  overflow: hidden; /* Ensures rounded corners on children */
+  background-color: #f9f9f9;
+}
+.search-container input {
+  border: none;
+  outline: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  flex: 1; /* Allows the input to grow inside the container */
+}
+.search-container input::placeholder {
+  color: #aaa;
+}
+.search-container button {
+  background-color: #28ee00;
+  max-height: max-content;
+  color: white;
+  border: none;
+  padding: 0 1rem;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-right: 1vw;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 20px;
+}
+.search-container button:hover {
+  background-color: #039e2a;
+}
+.search-container button:active {
+  transform: scale(0.95);
+}
+.aqi-display {
+  margin-left: 1rem;
+  font-size: 1.2rem;
+  color: #007bff;
+  font-weight: bold;
+}
+.city-name {
+  position: absolute; 
+    top: 11vh; 
+    left: 15vw; 
+    background-color: #f9f9f9;
+    border: 2px solid #28a745; 
+    border-radius: 10px;
+    padding: 1vh 1vw;
+    color: #28a745;
+    font-weight: bold;
+    font-size: 1.2rem;
     text-align: center;
-    gap: 1rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-  
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000; 
+    height:3vh;
+    display: flex; /* Enables flexbox */
+   justify-content: center; /* Centers content horizontally */
+   align-items: center; 
+    
+}
+
+.city-name h2 {
+  color: #039e2a; 
+  font-size: 1.2rem;
+  font-weight: bold;
+}
   #map {
     width: 70vw;
-    height: 30vw; 
+    height: 35vw;
     margin-top: 1rem;
     position: relative;
     margin: 0 auto;
     padding-bottom: 3rem;
+    border-radius: 10px; 
   }
+  @media (max-width: 768px) {
+    .search-bar {
+      flex-direction: column;
+    }
   
-  
+    .aqi-display {
+      margin-left: 0;
+      margin-top: 0.5rem;
+    }
+  }
+
   .info {
-    margin-bottom: 1rem;
-    margin: 0 auto;
+    position: absolute; /* Aligns it to the map */
+    top: 11vh; /* Adjust based on desired position */
+    right: 15vw; /* Align to the right edge of the map */
+    background-color: #f9f9f9;
+    border: 2px solid #28a745; /* Green border */
+    border-radius: 10px;
+    padding: 10px 15px;
+    color: #28a745;
+    font-weight: bold;
+    font-size: 1.2rem;
     text-align: center;
-    gap: 1rem;
-    padding-bottom: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000; 
   }
+  
+  .info p {
+    margin: 0;
+    font-size: 1rem;
+    word-wrap: break-word;
+  }
+  
+  .info strong {
+    color: #039e2a; 
+    font-size: 1.2rem;
+  }
+  
 
   .aqi-table {
     margin-top: 20px;
     width: 70vw;
-    height: 30vw; 
     position: relative;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .aqi-table table {
     width: 100%;
     border-collapse: collapse;
+    margin: 0 auto;
+    justify-content: center;
   }
   .aqi-table th, .aqi-table td {
     border: 1px solid #ddd;
@@ -67,3 +191,59 @@
       color: #FFF;
     }
 
+    .aqi-bubble {
+      margin-top: 1rem;
+    }
+
+    .aqi-bubble h2 {
+      cursor: pointer;
+      color: black;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      display: inline-block;
+      font-size: 1rem;
+      border-color: #353535;
+      border-style: solid;
+    }
+
+    .aqi-bubble h2:hover {
+      background-color: #9d9e9e;
+    }
+
+    .bubble-content {
+      margin-top: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      overflow: hidden;
+      background-color: #f9f9f9;
+      padding: 1rem;
+      width: 70vw;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      align-items: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      justify-content: center;
+    }
+
+    th,
+    td {
+      padding: 0.5rem;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    .toggle-icon {
+      float: right;
+    }
+
+    .text-yellow {
+      color: yellow;
+      text-shadow: 1px 1px 2px black;
+    }
+    
