@@ -1,4 +1,5 @@
 export interface PolutionMapHistory {
+    dateValue: Date;
     city: string;
     coValue: number;
     nh3Value: number;

@@ -18,5 +18,7 @@ constructor(private http: HttpClient) {}
     const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${this.API_KEY}`;
     return this.http.get(url);
   }
+
+  
 }
 

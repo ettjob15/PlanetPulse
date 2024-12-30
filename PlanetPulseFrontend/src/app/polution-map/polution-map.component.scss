@@ -8,6 +8,7 @@
   gap: 1rem;
   padding-left: 15vw;
   padding-right: 15vw;
+  flex: center;
 }
 
 .search-bar input {
@@ -29,10 +30,11 @@
 .search-container {
   display: flex;
   align-items: center;
-  width: 30vw;
+  justify-content: center;
+  width: 25vw;
   border: 2px solid #ccc;
   border-radius: 25px;
-  overflow: hidden; /* Ensures rounded corners on children */
+  overflow: hidden; 
   background-color: #f9f9f9;
 }
 .search-container input {
@@ -40,7 +42,7 @@
   outline: none;
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  flex: 1; /* Allows the input to grow inside the container */
+  flex: 1; 
 }
 .search-container input::placeholder {
   color: #aaa;
@@ -73,9 +75,8 @@
   font-weight: bold;
 }
 .city-name {
-  position: absolute; 
-    top: 11vh; 
-    left: 15vw; 
+  position: relative; 
+    flex: left;
     background-color: #f9f9f9;
     border: 2px solid #28a745; 
     border-radius: 10px;
@@ -87,8 +88,8 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 1000; 
     height:3vh;
-    display: flex; /* Enables flexbox */
-   justify-content: center; /* Centers content horizontally */
+    display: flex;
+   justify-content: center; 
    align-items: center; 
     
 }
@@ -98,6 +99,16 @@
   font-size: 1.2rem;
   font-weight: bold;
 }
+.map-container {
+  position: relative;
+  width: 70vw;
+  margin: 0 auto;
+  transition: max-height 0.3s ease; 
+}
+#map.collapsed {
+  height: 0; 
+  overflow: hidden; 
+}
   #map {
     width: 70vw;
     height: 35vw;
@@ -106,7 +117,34 @@
     margin: 0 auto;
     padding-bottom: 3rem;
     border-radius: 10px; 
+    transition: max-height 0.3s ease; 
   }
+
+  .map-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .map-toggle i {
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
+  .map-toggle:hover {
+    background-color: #f0f0f0;
+  }
+
   @media (max-width: 768px) {
     .search-bar {
       flex-direction: column;
@@ -117,21 +155,20 @@
       margin-top: 0.5rem;
     }
     .bubble-content {
-      width: 90%; /* Adjust width for smaller screens */
+      width: 90%; 
       padding: 0.5rem;
     }
   
     .bubble-content table {
-      font-size: 0.9rem; /* Adjust font size for readability on small screens */
+      font-size: 0.9rem; 
     }
   }
 
   .info {
-    position: absolute; /* Aligns it to the map */
-    top: 11vh; /* Adjust based on desired position */
-    right: 15vw; /* Align to the right edge of the map */
+    position: relative; 
+    flex: right;
     background-color: #f9f9f9;
-    border: 2px solid #28a745; /* Green border */
+    border: 2px solid #28a745;
     border-radius: 10px;
     padding: 10px 15px;
     color: #28a745;
@@ -171,7 +208,8 @@
     margin: 0 auto;
     justify-content: center;
   }
-  .aqi-table th, .aqi-table td {
+  .aqi-table th, 
+  .aqi-table td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
@@ -204,9 +242,11 @@
     .aqi-bubble {
       margin-top: 1rem;
       display: flex;
-      flex-direction: column; /* Stack button and table vertically */
-      align-items: center; /* Center horizontally */
-      justify-content: flex-start; /* Ensure the button stays at the top */
+      flex-direction: column;
+      align-items:start;
+      padding-left: 15vw;
+      justify-content: flex-start; 
+      border-radius: 10px;
     }
     .aqi-bubble h2 {
       cursor: pointer;
@@ -219,11 +259,46 @@
       border-style: solid;
       
     }
-
+    .toggle-container {
+      margin: 0 auto;
+      text-align: center;
+      padding: 0 15%;
+    }
     .aqi-bubble h2:hover {
       background-color: #9d9e9e;
     }
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+     
+      overflow: hidden;
+      
+    }
+    .toggle-button {
+      cursor: pointer;
+      color: #333;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+      border: 2px solid #181818;
+      font-size: 1.2rem;
+      transition: background-color 0.3s;
+      text-align: center;
+      flex: 1; /* Equal space for both toggles */
+      margin: 0 0.5rem;
+      align-items: center;
 
+
+    }
+    .toggle-button:hover {
+      background-color: #e0e0e0;
+    }
+    .toggle-icon {
+      margin-left: 0.5rem;
+      font-size: 1rem;
+    }
     .bubble-content {
       margin-top: 0.5rem;
       border: 1px solid #ddd;
@@ -231,8 +306,8 @@
       overflow: hidden;
       background-color: #f9f9f9;
       padding: 1rem;
-      width: 70%; /* Adjust width to fit well on all screen sizes */
-      max-width: 800px; /* Prevent it from becoming too large on wide screens */
+      width: 95%; 
+      max-width: 95%; 
       text-align: center;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
@@ -241,6 +316,7 @@
       width: 100%;
       border-collapse: collapse;
       margin: 0 auto; /* Center the table horizontally */
+      padding-left: 15vw;
     }
     .bubble-content th,
     .bubble-content td {
@@ -260,4 +336,83 @@
       color: yellow;
       text-shadow: 1px 1px 2px black;
     }
+
+    .history-section {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items:end;
+      padding-right: 15vw;
+      justify-content: flex-end; 
+      border-radius: 10px;
+
+    }
     
+    .history-section h2 {
+      cursor: pointer;
+      color: black;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      display: inline-block;
+      font-size: 1rem;
+      border-color: #353535;
+      border-style: solid;
+    }
+    
+    .history-section h2:hover {
+      background-color: #e0e0e0;
+    }
+    
+    .toggle-icon {
+      float: right;
+      font-size: 1rem;
+    }
+    
+    .history-content {
+      margin-top: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      overflow: hidden;
+      background-color: #f9f9f9;
+      padding: 1rem;
+      width: 100%; 
+      max-width: 95%;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+  .history-table {
+    margin-top: 20px;
+    width: 70vw;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+    .history-table table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+        justify-content: center;
+    }
+    .history-table th,
+    .history-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    
+    .history-table th {
+      background-color: #f4f4f4;
+    }
+    
+    .mat-elevation-z4 {
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .collapse-layer {
+      display: flex;
+      flex-direction: column;
+    }

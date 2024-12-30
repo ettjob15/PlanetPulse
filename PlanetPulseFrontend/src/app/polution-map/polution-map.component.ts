@@ -57,7 +57,7 @@ export class PolutionMapComponent {
   cityNameDisplay = signal('');
   airQualityIndex = signal<number | null>(null);
   cityNotFound = signal(false);
-  displayedColumns: string[] = ['city', 'polutionIndex', 'coValue',
+  displayedColumns: string[] = ['dateValue','city', 'polutionIndex', 'coValue',
     'no2Value', 'nh3Value', 'o3Value', 'pm10Value', 'pm25Value', 'so2Value'];
   map!: L.Map;
   marker!: L.Marker;
@@ -66,6 +66,7 @@ export class PolutionMapComponent {
   geoJsonLayer!: L.GeoJSON;
   subscription: Subscription | undefined;
   polutionsData: PolutionMapHistory = {
+    dateValue: new Date(''),
     city: '',
     coValue: 0,
     nh3Value: 0,
@@ -76,8 +77,21 @@ export class PolutionMapComponent {
     polutionIndex: 0,
     so2Value: 0
   };
+  mapCollapsed = false
+  isHistoryExpanded = false;
+
+  toggleMap() {
+    this.mapCollapsed = !this.mapCollapsed;
+  }
+  
+
+  toggleHistory() {
+    this.isHistoryExpanded = !this.isHistoryExpanded;
+  }
+
   constructor(private polutionMapService: PolutionMapServiceService, private openWeatherService: OpenweatherService, public userService: UserService) {
     this.polutionMapFormGroup = new FormGroup({
+      dateValue: new FormControl(new Date()),
       city: new FormControl(''),
       coValue: new FormControl(0),
       nh3Value: new FormControl(0),

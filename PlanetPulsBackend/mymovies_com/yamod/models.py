@@ -42,6 +42,7 @@ class PolutionUserHistory(models.Model):
         on_delete=models.CASCADE,
         related_name='pollution_histories'
     )
+    dateValue = models.DateField(default=datetime.date.today)
     city = models.CharField(max_length=500)
     polutionIndex = models.IntegerField()
     coValue = models.DecimalField(max_digits=10,decimal_places=3)
@@ -51,6 +52,7 @@ class PolutionUserHistory(models.Model):
     pm25Value = models.DecimalField(max_digits=10,decimal_places=3)
     pm10Value =models.DecimalField(max_digits=10, decimal_places=3)
     nh3Value = models.DecimalField(max_digits=10, decimal_places=3)
+
 
     def __str__(self):
         return f"{self.city} - {self.user.username}"
