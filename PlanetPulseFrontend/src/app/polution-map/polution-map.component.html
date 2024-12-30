@@ -51,10 +51,12 @@
   <h2 (click)="toggleAqiBubble()" class="toggle-button">
     Air Quality Index (AQI) Table <span class="toggle-icon">{{ isBubbleExpanded ? '▲' : '▼' }}</span>
   </h2>
+  @if(userService.isLoggedInSignal()){
   <h2 (click)="toggleHistory()" class="toggle-button">
     Pollution History
     <span class="toggle-icon">{{ isHistoryExpanded ? '▲' : '▼' }}</span>
   </h2>
+}
 </div>
 
 @if (isBubbleExpanded) {
