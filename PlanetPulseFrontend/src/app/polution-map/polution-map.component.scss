@@ -114,6 +114,14 @@
       margin-left: 0;
       margin-top: 0.5rem;
     }
+    .bubble-content {
+      width: 90%; /* Adjust width for smaller screens */
+      padding: 0.5rem;
+    }
+  
+    .bubble-content table {
+      font-size: 0.9rem; /* Adjust font size for readability on small screens */
+    }
   }
 
   .info {
@@ -193,10 +201,11 @@
 
     .aqi-bubble {
       margin-top: 1rem;
-      align-items: center;
-      justify-content: center;
+      display: flex;
+      flex-direction: column; /* Stack button and table vertically */
+      align-items: center; /* Center horizontally */
+      justify-content: flex-start; /* Ensure the button stays at the top */
     }
-
     .aqi-bubble h2 {
       cursor: pointer;
       color: black;
@@ -220,27 +229,26 @@
       overflow: hidden;
       background-color: #f9f9f9;
       padding: 1rem;
-      width: 70vw;
-      position: relative;
-      display: flex;
-      justify-content: center;
+      width: 70%; /* Adjust width to fit well on all screen sizes */
+      max-width: 800px; /* Prevent it from becoming too large on wide screens */
       text-align: center;
-      align-items: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    table {
+    .bubble-content table {
       width: 100%;
       border-collapse: collapse;
-      justify-content: center;
+      margin: 0 auto; /* Center the table horizontally */
     }
-
-    th,
-    td {
+    .bubble-content th,
+    .bubble-content td {
       padding: 0.5rem;
-      text-align: left;
       border: 1px solid #ddd;
+      text-align: center;
     }
-
+    .bubble-content th {
+      background-color: #f4f4f4;
+    }
     .toggle-icon {
       float: right;
       padding: 2px 2px;
