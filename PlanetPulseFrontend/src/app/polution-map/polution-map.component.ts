@@ -34,7 +34,7 @@ import { PolutionMapHistory } from '../interfaces/polutionmap';
     MatButtonModule,
     MatInputModule,
     MatIconModule,
-  CommonModule,],
+    CommonModule,],
   templateUrl: './polution-map.component.html',
   styleUrl: './polution-map.component.scss'
 })
@@ -53,9 +53,18 @@ export class PolutionMapComponent {
   isBubbleExpanded = false;
   geoJsonLayer!: L.GeoJSON;
   subscription: Subscription | undefined;
-  constructor(private polutionMapService: PolutionMapServiceService, private openWeatherService: OpenweatherService, public userService: UserService) {
-
-  }
+  polutionsData: PolutionMapHistory ={
+    city: '',
+    coValue: 0,
+    nh3Value: 0,
+    no2Value: 0,
+    o3Value: 0,
+    pm10Value: 0,
+    pm25Value: 0,
+    polutionIndex: 0,
+    so2Value: 0
+  };
+  constructor(private polutionMapService: PolutionMapServiceService, private openWeatherService: OpenweatherService, public userService: UserService) {}
 
   ngOnInit() {
     this.initializeMap();
@@ -63,17 +72,17 @@ export class PolutionMapComponent {
     this.polutionMapService.getPolutionMapUserHistory().subscribe((polutionMapHistoryData) => {
       this.polutionMapHistory = polutionMapHistoryData;
     });
-    if(this.userService.isLoggedInSignal()){
+    if (this.userService.isLoggedInSignal()) {
       this.subscription = this.filterControl.valueChanges
-      .pipe(
-        debounceTime(500),
-        switchMap(() => {
-          return this.polutionMapService.getPolutionMapUserHistory();
-        })
-      )
-      .subscribe((response) => {
-        this.polutionMapHistory = response;
-      });
+        .pipe(
+          debounceTime(500),
+          switchMap(() => {
+            return this.polutionMapService.getPolutionMapUserHistory();
+          })
+        )
+        .subscribe((response) => {
+          this.polutionMapHistory = response;
+        });
     }
 
 
@@ -123,7 +132,6 @@ export class PolutionMapComponent {
               };
 
               this.airQualityIndex.set(aqi);
-
               this.fetchCityBoundaries(lat, lon, aqi, pollutants);
             },
             error: (err) => console.error('Error fetching pollution data:', err),
@@ -206,6 +214,7 @@ export class PolutionMapComponent {
               // OpenWeather structure => pollutionData.list[0].main.aqi
               this.airQualityIndex.set(pollutionData.list[0].main.aqi);
               this.fetchCityBoundaries(lat, lon, this.airQualityIndex()!, pollutants);
+              
               /* this.drawAqiCircle(lat, lon, this.airQualityIndex()!); */
             },
             error: (err) => console.error(err),
@@ -217,7 +226,21 @@ export class PolutionMapComponent {
       },
       error: (err) => console.error(err),
     });
+    console.log("hi");
+    if ( this.userService.isLoggedInSignal()) {
+      /*ToDo wennn citynot found net öffnen*/
+
+      this.createHistoryEntry()
+    }
   }
+
+  createHistoryEntry() {
+    this.polutionMapService.create(this.polutionsData).subscribe(() => {
+      console.log('New History Entry created successfully!');
+    });
+  }
+
+
 
   updateMapLocation(lat: number, lon: number) {
     this.map.setView([lat, lon], 10);
@@ -240,7 +263,7 @@ export class PolutionMapComponent {
   fetchCityBoundaries(lat: number, lon: number, aqi: number, pollutants: Record<string, number>) {
     const apiKey = 'e49b6d1e3dc341adbbf8d34997c0c5b5';
     const url = `https://api.geoapify.com/v1/boundaries/part-of?lat=${lat}&lon=${lon}&geometry=geometry_1000&apiKey=${apiKey}`;
-
+    
     fetch(url)
       .then((response) => response.json())
       .then((data) => {

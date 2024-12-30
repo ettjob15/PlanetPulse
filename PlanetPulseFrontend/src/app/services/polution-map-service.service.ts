@@ -12,6 +12,6 @@ export class PolutionMapServiceService {
     return this.http.get<PolutionMapHistory[]>('/api/polutionmap/');
   }
   create(polutionMapHistory: PolutionMapHistory) {
-    return this.http.post('/api/polutionmap/', polutionMapHistory);
+    return this.http.post('/api/polutionmap/', polutionMapHistory, { withCredentials: true });
   }
 }
