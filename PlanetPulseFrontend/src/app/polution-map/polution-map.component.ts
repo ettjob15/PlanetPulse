@@ -50,6 +50,7 @@ import { MatNativeDateModule, MatPseudoCheckboxModule } from '@angular/material/
 })
 
 export class PolutionMapComponent {
+  formButtonDisabled:boolean=true;
   polutionMapHistory: PolutionMapHistory[] = [];
   cityName = signal('');
   filterControl = new FormControl('');
@@ -91,12 +92,12 @@ export class PolutionMapComponent {
   }
 
   ngOnInit() {
-    try{
+    try {
       this.initializeMap();
       this.autoLocateUser();
-    }catch(ex){
+    } catch (ex) {
     }
-    
+
     if (this.userService.isLoggedInSignal()) {
       this.getHistoryData();
     }
@@ -160,7 +161,7 @@ export class PolutionMapComponent {
               };
 
               this.airQualityIndex.set(aqi);
-              this.fetchCityBoundaries(lat, lon, aqi, pollutants);
+              this.fetchCityBoundaries(lat, lon, aqi, pollutants,false);
             },
             error: (err) => console.error('Error fetching pollution data:', err),
           });
@@ -241,7 +242,7 @@ export class PolutionMapComponent {
 
               // OpenWeather structure => pollutionData.list[0].main.aqi
               this.airQualityIndex.set(pollutionData.list[0].main.aqi);
-              this.fetchCityBoundaries(lat, lon, this.airQualityIndex()!, pollutants);
+              this.fetchCityBoundaries(lat, lon, this.airQualityIndex()!, pollutants,true);
 
               /* this.drawAqiCircle(lat, lon, this.airQualityIndex()!); */
             },
@@ -254,22 +255,16 @@ export class PolutionMapComponent {
       },
       error: (err) => console.error(err),
     });
-    if (this.userService.isLoggedInSignal() && this.cityNotFound() == false) {
-      setTimeout(() => {
-        var formButton = document.getElementById("createButton")
-        if (formButton != null) {
-          formButton.click();
 
-        }
-      }, 3000);
-    }
   }
 
   createPolutionHistoryEntry() {
-    this.polutionMapService.create(this.polutionMapFormGroup.value).subscribe(() => {
-      console.log('New History Entry created successfully!');
-      this.ngOnInit();
-    });
+    if(!this.formButtonDisabled){
+      this.polutionMapService.create(this.polutionMapFormGroup.value).subscribe(() => {
+        console.log('New History Entry created successfully!');
+        this.ngOnInit();
+      });
+    }
   }
 
 
@@ -291,7 +286,7 @@ export class PolutionMapComponent {
     this.cityName.set(inputElement.value); // cityName aktualisieren
   }
 
-  fetchCityBoundaries(lat: number, lon: number, aqi: number, pollutants: Record<string, number>) {
+  fetchCityBoundaries(lat: number, lon: number, aqi: number, pollutants: Record<string, number>,addToHistory:boolean) {
     const apiKey = 'e49b6d1e3dc341adbbf8d34997c0c5b5';
     const url = `https://api.geoapify.com/v1/boundaries/part-of?lat=${lat}&lon=${lon}&geometry=geometry_1000&apiKey=${apiKey}`;
 
@@ -340,7 +335,7 @@ export class PolutionMapComponent {
               pm10Value: new FormControl(pollutants['PM10']),
               pm25Value: new FormControl(pollutants['PM2_5']),
               polutionIndex: new FormControl(aqi),
-              so2Value: new FormControl(0),
+              so2Value: new FormControl(pollutants['SO2']),
             });
             this.addStyledBoundaryToMap(selectedFeature);
           } else {
@@ -348,6 +343,15 @@ export class PolutionMapComponent {
           }
         } else {
           console.error('No boundary data found for the specified location.');
+        }
+      }).then(() => {
+        if (this.userService.isLoggedInSignal() && !this.cityNotFound()&&addToHistory) {
+          var formButton = document.getElementById("createButton")
+          if (formButton != null) {
+            this.formButtonDisabled=false;
+            formButton.click();
+            this.formButtonDisabled=true;
+          }
         }
       })
       .catch((error) => console.error('Error fetching boundary data:', error));
