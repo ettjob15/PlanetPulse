@@ -1,9 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, ElementRef, signal, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { OpenweatherService } from '../services/openweather.service';
 import { UserService } from '../services/user.service';
 import { AsyncPipe, CommonModule, DatePipe, JsonPipe } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -21,6 +21,11 @@ import {
 } from 'rxjs';
 import { PolutionMapServiceService } from '../services/polution-map-service.service';
 import { PolutionMapHistory } from '../interfaces/polutionmap';
+import { Title } from '@angular/platform-browser';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule } from '@angular/material/card';
+import { MatNativeDateModule, MatPseudoCheckboxModule } from '@angular/material/core';
 
 
 @Component({
@@ -34,6 +39,11 @@ import { PolutionMapHistory } from '../interfaces/polutionmap';
     MatButtonModule,
     MatInputModule,
     MatIconModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatCardModule,
+    MatNativeDateModule,
+    MatPseudoCheckboxModule,
     CommonModule,],
   templateUrl: './polution-map.component.html',
   styleUrl: './polution-map.component.scss'
@@ -43,17 +53,19 @@ export class PolutionMapComponent {
   polutionMapHistory: PolutionMapHistory[] = [];
   cityName = signal('');
   filterControl = new FormControl('');
+  polutionMapFormGroup: FormGroup;
   cityNameDisplay = signal('');
   airQualityIndex = signal<number | null>(null);
   cityNotFound = signal(false);
-  displayedColumns: string[] = ['city', 'polutionIndex', 'coValue', 'no2Value'];
+  displayedColumns: string[] = ['city', 'polutionIndex', 'coValue',
+    'no2Value', 'nh3Value', 'o3Value', 'pm10Value', 'pm25Value', 'so2Value'];
   map!: L.Map;
   marker!: L.Marker;
   aqiCircle!: L.Circle;
   isBubbleExpanded = false;
   geoJsonLayer!: L.GeoJSON;
   subscription: Subscription | undefined;
-  polutionsData: PolutionMapHistory ={
+  polutionsData: PolutionMapHistory = {
     city: '',
     coValue: 0,
     nh3Value: 0,
@@ -64,29 +76,45 @@ export class PolutionMapComponent {
     polutionIndex: 0,
     so2Value: 0
   };
-  constructor(private polutionMapService: PolutionMapServiceService, private openWeatherService: OpenweatherService, public userService: UserService) {}
+  constructor(private polutionMapService: PolutionMapServiceService, private openWeatherService: OpenweatherService, public userService: UserService) {
+    this.polutionMapFormGroup = new FormGroup({
+      city: new FormControl(''),
+      coValue: new FormControl(0),
+      nh3Value: new FormControl(0),
+      no2Value: new FormControl(0),
+      o3Value: new FormControl(0),
+      pm10Value: new FormControl(0),
+      pm25Value: new FormControl(0),
+      polutionIndex: new FormControl(0),
+      so2Value: new FormControl(0),
+    });
+  }
 
   ngOnInit() {
-    this.initializeMap();
-    this.autoLocateUser();
+    try{
+      this.initializeMap();
+      this.autoLocateUser();
+    }catch(ex){
+    }
+    
+    if (this.userService.isLoggedInSignal()) {
+      this.getHistoryData();
+    }
+  }
+  getHistoryData() {
     this.polutionMapService.getPolutionMapUserHistory().subscribe((polutionMapHistoryData) => {
       this.polutionMapHistory = polutionMapHistoryData;
     });
-    if (this.userService.isLoggedInSignal()) {
-      this.subscription = this.filterControl.valueChanges
-        .pipe(
-          debounceTime(500),
-          switchMap(() => {
-            return this.polutionMapService.getPolutionMapUserHistory();
-          })
-        )
-        .subscribe((response) => {
-          this.polutionMapHistory = response;
-        });
-    }
-
-
-
+    this.subscription = this.filterControl.valueChanges
+      .pipe(
+        debounceTime(500),
+        switchMap(() => {
+          return this.polutionMapService.getPolutionMapUserHistory();
+        })
+      )
+      .subscribe((response) => {
+        this.polutionMapHistory = response;
+      });
   }
   ngAfterViewInit() {
     setTimeout(() => {
@@ -214,7 +242,7 @@ export class PolutionMapComponent {
               // OpenWeather structure => pollutionData.list[0].main.aqi
               this.airQualityIndex.set(pollutionData.list[0].main.aqi);
               this.fetchCityBoundaries(lat, lon, this.airQualityIndex()!, pollutants);
-              
+
               /* this.drawAqiCircle(lat, lon, this.airQualityIndex()!); */
             },
             error: (err) => console.error(err),
@@ -226,20 +254,23 @@ export class PolutionMapComponent {
       },
       error: (err) => console.error(err),
     });
-    console.log("hi");
-    if ( this.userService.isLoggedInSignal()) {
-      /*ToDo wennn citynot found net öffnen*/
+    if (this.userService.isLoggedInSignal() && this.cityNotFound() == false) {
+      setTimeout(() => {
+        var formButton = document.getElementById("createButton")
+        if (formButton != null) {
+          formButton.click();
 
-      this.createHistoryEntry()
+        }
+      }, 3000);
     }
   }
 
-  createHistoryEntry() {
-    this.polutionMapService.create(this.polutionsData).subscribe(() => {
+  createPolutionHistoryEntry() {
+    this.polutionMapService.create(this.polutionMapFormGroup.value).subscribe(() => {
       console.log('New History Entry created successfully!');
+      this.ngOnInit();
     });
   }
-
 
 
   updateMapLocation(lat: number, lon: number) {
@@ -263,7 +294,7 @@ export class PolutionMapComponent {
   fetchCityBoundaries(lat: number, lon: number, aqi: number, pollutants: Record<string, number>) {
     const apiKey = 'e49b6d1e3dc341adbbf8d34997c0c5b5';
     const url = `https://api.geoapify.com/v1/boundaries/part-of?lat=${lat}&lon=${lon}&geometry=geometry_1000&apiKey=${apiKey}`;
-    
+
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -300,7 +331,17 @@ export class PolutionMapComponent {
               ...pollutants,
             };
             this.cityNameDisplay.set(cityName);
-
+            this.polutionMapFormGroup = new FormGroup({
+              city: new FormControl(cityName),
+              coValue: new FormControl(pollutants["CO"]),
+              nh3Value: new FormControl(pollutants["NH3"]),
+              no2Value: new FormControl(pollutants["NO2"]),
+              o3Value: new FormControl(pollutants["O3"]),
+              pm10Value: new FormControl(pollutants['PM10']),
+              pm25Value: new FormControl(pollutants['PM2_5']),
+              polutionIndex: new FormControl(aqi),
+              so2Value: new FormControl(0),
+            });
             this.addStyledBoundaryToMap(selectedFeature);
           } else {
             console.error('No suitable feature found for the specified location.');

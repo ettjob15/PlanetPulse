@@ -20,7 +20,9 @@
   outline: none;
   transition: border-color 0.3s;
 }
-
+.hidden {
+  display: none; /* Hides the element but keeps it in the DOM */
+}
 .search-bar input:focus {
   border-color: #28ee00;
 }
