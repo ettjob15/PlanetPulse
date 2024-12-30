@@ -7,7 +7,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from django.db import IntegrityError
 from rest_framework.permissions import IsAuthenticated
-from .serializers import MovieSerializer, GenreSerializer, PersonSerializer
+from .serializers import MovieSerializer, GenreSerializer, PersonSerializer, PolutionMapSerializer, Co2CalculatorSerializer
 
 from . import models
 
@@ -267,3 +267,37 @@ class MovieViewSet(viewsets.ModelViewSet):
                 "black_and_white": movie.black_and_white
                 }
     
+class PolutionMapViewSet(viewsets.ModelViewSet):
+    queryset = models.PolutionUserHistory.objects.all()
+    serializer_class = PolutionMapSerializer
+
+    permission_classes = [IsAuthenticated]
+    def list(self, request):
+        queryset = self.get_queryset().filter(user=request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class Co2CalculatorViewSet(viewsets.ModelViewSet):
+    queryset = models.Co2CalculatorHistory.objects.all()
+    serializer_class = Co2CalculatorSerializer
+
+    # permission_classes = [IsAuthenticated]
+    def list(self, request):
+        queryset = self.get_queryset()#.filter(user=request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

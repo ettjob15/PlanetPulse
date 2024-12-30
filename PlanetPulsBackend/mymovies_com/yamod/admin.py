@@ -15,3 +15,6 @@ class MovieAdmin(admin.ModelAdmin):
 admin.site.register(models.Genre)
 admin.site.register(models.Person)
 admin.site.register(models.Movie,MovieAdmin)
+admin.site.register(models.PolutionUserHistory)
+admin.site.register(models.Co2CalculatorHistory)
+admin.site.register(models.DistanceMode)

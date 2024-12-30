@@ -68,7 +68,8 @@
               "buildTarget": "PlanetPulseFrontend:build:production"
             },
             "development": {
-              "buildTarget": "PlanetPulseFrontend:build:development"
+              "buildTarget": "PlanetPulseFrontend:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

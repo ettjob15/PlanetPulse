@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from yamod.views import GenreViewSet, MovieViewSet, PersonViewSet
+from yamod.views import GenreViewSet, MovieViewSet, PersonViewSet, PolutionMapViewSet, Co2CalculatorViewSet
 
 
 
@@ -16,7 +16,8 @@ router = DefaultRouter()
 router.register(r'genres', GenreViewSet, basename='genres')
 router.register(r'movies', MovieViewSet, basename='movies')
 router.register(r'persons', PersonViewSet, basename='persons')
-
+router.register(r'polutionmap',PolutionMapViewSet,basename='polutionmap')
+router.register(r'co2calculator',Co2CalculatorViewSet,basename='co2calculator')
 
 
 urlpatterns = [

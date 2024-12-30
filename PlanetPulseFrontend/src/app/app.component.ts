@@ -5,6 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { UserService } from './services/user.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -22,5 +23,9 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class AppComponent {
   title = 'PlanetPulseFrontend';
+  constructor(public userService:UserService){}
   currentYear: number = new Date().getFullYear();
+  logout(): void {
+    this.userService.logout();
+  }
 }
