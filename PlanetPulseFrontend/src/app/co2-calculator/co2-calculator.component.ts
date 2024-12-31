@@ -9,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component'; // Update the path if needed
+import { UserService } from '../services/user.service';
+import { Co2CalculatorServiceService } from '../services/co2-calculator-service.service';
 
 @Component({
   selector: 'app-co2-calculator',
@@ -35,21 +37,17 @@ export class Co2CalculatorComponent {
   co2Emissions: number | null = null; // Calculated CO2 emissions
   history: { from: string; to: string; distance: number; mode: string; co2: number }[] = []; // History of calculations
 
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog,public userservice:UserService, 
+    private co2calculatorService:Co2CalculatorServiceService) {}
 
-  /**
-   * Switch the "From" and "To" fields.
-   */
+  
   switchFields() {
     const temp = this.from;
     this.from = this.to;
     this.to = temp;
   }
 
-  /**
-   * Placeholder method to calculate CO2 emissions.
-   * Shows a pop-up if the distance is 0 or negative.
-   */
+
   calculateCO2() {
     if (!this.from.trim()) {
       this.showDialog('Please enter a valid "From" location.');
@@ -71,7 +69,6 @@ export class Co2CalculatorComponent {
       return;
     }
   
-    // Example CO2 calculation formula
     const emissionFactors: { [key: string]: number } = {
       car: 0.2,
       bus: 0.05,
@@ -94,14 +91,10 @@ export class Co2CalculatorComponent {
       co2: this.co2Emissions
     });
   
-    // Reset the form after calculation
     this.resetForm();
   }
   
 
-  /**
-   * Reset the form fields but retain history.
-   */
   resetForm() {
     this.from = '';
     this.to = '';
@@ -110,9 +103,6 @@ export class Co2CalculatorComponent {
     this.co2Emissions = null;
   }
 
-  /**
-   * Show a dialog with the given message.
-   */
   showDialog(message: string) {
     this.dialog.open(DialogComponent, {
       data: { message }
