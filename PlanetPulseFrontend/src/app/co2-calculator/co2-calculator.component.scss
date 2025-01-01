@@ -1,3 +1,6 @@
+.hidden {
+  display: none; /* Hides the element but keeps it in the DOM */
+}
 .co2-calculator-container {
     display: flex;
     justify-content: space-between;

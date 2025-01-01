@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from . import models
+from .models import Co2CalculatorHistory, DistanceMode
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -29,10 +30,11 @@ class PolutionMapSerializer(serializers.ModelSerializer):
         exclude = ['user']
 
 class Co2CalculatorSerializer(serializers.ModelSerializer):
-    
+    distanceMode = serializers.PrimaryKeyRelatedField(queryset=DistanceMode.objects.all())
+
     class Meta:
-        model = models.Co2CalculatorHistory
-        exclude = ['user']  
+        model = Co2CalculatorHistory
+        exclude = ['user']
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod

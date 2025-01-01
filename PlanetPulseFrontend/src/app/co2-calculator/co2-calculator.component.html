@@ -1,25 +1,37 @@
 <div class="co2-calculator-container" style="display: flex; justify-content: space-between; gap: 20px; padding: 20px;">
   <div class="calculator-form" style="flex: 1; max-width: 40%;">
     <h2>CO2 Calculator</h2>
-    <form>
+    <form [formGroup]="historyFormGroup" (ngSubmit)="calculateCO2()">
       <mat-form-field appearance="outline">
         <mat-label>From</mat-label>
-        <input matInput [(ngModel)]="from" name="from" required>
+        <input matInput formControlName="fromCity" required>
+        <mat-error *ngIf="historyFormGroup.get('fromCity')?.hasError('required')">
+          From city is required.
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>To</mat-label>
-        <input matInput [(ngModel)]="to" name="to" required>
+        <input matInput formControlName="toCity" required>
+        <mat-error *ngIf="historyFormGroup.get('toCity')?.hasError('required')">
+          To city is required.
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Distance traveled (km)</mat-label>
-        <input matInput type="number" [(ngModel)]="distance" name="distance" required min="0">
+        <input matInput type="number" formControlName="distance" required>
+        <mat-error *ngIf="historyFormGroup.get('distance')?.hasError('required')">
+          Distance is required.
+        </mat-error>
+        <mat-error *ngIf="historyFormGroup.get('distance')?.hasError('min')">
+          Distance must be greater than 0.
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Mode of transport</mat-label>
-        <mat-select [(ngModel)]="mode" name="mode" required>
+        <mat-select formControlName="mode" required>
           <mat-option value="car">Car</mat-option>
           <mat-option value="bus">Bus</mat-option>
           <mat-option value="train">Train</mat-option>
@@ -29,24 +41,54 @@
           <mat-option value="truck">Truck</mat-option>
           <mat-option value="boat">Boat</mat-option>
         </mat-select>
+        <mat-error *ngIf="historyFormGroup.get('mode')?.hasError('required')">
+          Mode of transport is required.
+        </mat-error>
       </mat-form-field>
 
       <div class="button-group">
         <button mat-raised-button color="primary" type="button" (click)="switchFields()">Switch</button>
-        <button mat-raised-button color="accent" type="button" (click)="calculateCO2()">Calculate CO2</button>
+        <button mat-raised-button color="accent" type="submit">Calculate CO2</button>
       </div>
     </form>
   </div>
 
   <div class="history-section" style="flex: 2; max-width: 60%; overflow: auto; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;">
-    <h3 style="text-align: center;">History</h3>
-    <mat-list>
-      <mat-list-item *ngFor="let item of history" style="word-wrap: break-word; margin-bottom: 10px;">
-        <div>
-          From: {{ item.from }} | To: {{ item.to }} | Distance: {{ item.distance }} km | 
-          Mode: {{ item.mode }} | CO2: {{ item.co2 }} kg
-        </div>
-      </mat-list-item>
-    </mat-list>
+    <h3 style="text-align: center;">Calculation History</h3>
+    <table mat-table [dataSource]="history" style="width: 100%" class="mat-elevation-z4">
+      <!-- From Column -->
+      <ng-container matColumnDef="fromCity">
+        <th mat-header-cell *matHeaderCellDef> From </th>
+        <td mat-cell *matCellDef="let element"> {{ element.fromCity }} </td>
+      </ng-container>
+
+      <!-- To Column -->
+      <ng-container matColumnDef="toCity">
+        <th mat-header-cell *matHeaderCellDef> To </th>
+        <td mat-cell *matCellDef="let element"> {{ element.toCity }} </td>
+      </ng-container>
+
+      <!-- Distance Column -->
+      <ng-container matColumnDef="distance">
+        <th mat-header-cell *matHeaderCellDef> Distance (km) </th>
+        <td mat-cell *matCellDef="let element"> {{ element.distance }} km </td>
+      </ng-container>
+
+      <!-- Mode Column -->
+      <ng-container matColumnDef="distanceMode">
+        <th mat-header-cell *matHeaderCellDef> Mode of Transport </th>
+        <td mat-cell *matCellDef="let element"> {{ element.distanceMode?.name }} </td>
+      </ng-container>
+
+      <!-- CO2 Emissions Column -->
+      <ng-container matColumnDef="co2">
+        <th mat-header-cell *matHeaderCellDef> CO2 (kg) </th>
+        <td mat-cell *matCellDef="let element"> {{ element.co2 }} kg </td>
+      </ng-container>
+
+      <!-- Table Header and Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
   </div>
 </div>

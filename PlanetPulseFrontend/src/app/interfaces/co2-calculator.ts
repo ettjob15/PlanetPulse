@@ -2,7 +2,7 @@ export interface Co2Calculator {
     fromCity: string;
     toCity: string;
     distance: number;
-    distanceMode: DistanceMode;
+    distanceMode: DistanceMode | number;
     co2: number;
     //date: Date;
 

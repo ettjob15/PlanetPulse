@@ -2,6 +2,7 @@ import datetime
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.views import View
+from .models import DistanceMode, Co2CalculatorHistory
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -290,18 +291,40 @@ class PolutionMapViewSet(viewsets.ModelViewSet):
     
     
 class Co2CalculatorViewSet(viewsets.ModelViewSet):
-    queryset = models.Co2CalculatorHistory.objects.all()
+    queryset = Co2CalculatorHistory.objects.all()
     serializer_class = Co2CalculatorSerializer
+    permission_classes = [IsAuthenticated]
 
-    # permission_classes = [IsAuthenticated]
     def list(self, request):
-        queryset = self.get_queryset()#.filter(user=request.user)
-        serializer = self.get_serializer(queryset, many=True)
+        if not request.user.is_authenticated:
+            return Response(
+                {"error": "Authentication is required to access this resource."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        queryset = self.queryset.filter(user=request.user)
+        serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     def create(self, request):
-        serializer = self.get_serializer(data=request.data)
+        data = request.data  
+        distance_mode_id = data.get("distanceMode")  
+
+        
+        try:
+            distance_mode_instance = DistanceMode.objects.get(id=distance_mode_id)
+        except DistanceMode.DoesNotExist:
+            return Response(
+                {"error": f"DistanceMode with ID {distance_mode_id} not found."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Update data to match serializer expectations
+        data["distanceMode"] = distance_mode_instance.id
+
+        # Validate and save
+        serializer = self.serializer_class(data=data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save(user=request.user, distanceMode=distance_mode_instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
