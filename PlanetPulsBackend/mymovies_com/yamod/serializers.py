@@ -4,37 +4,51 @@ from .models import Co2CalculatorHistory, DistanceMode
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-class GenreSerializer(serializers.ModelSerializer):
 
+class DistanceModeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DistanceMode
+        fields = ['id', 'name', ]
+
+
+class Co2CalculatorSerializer(serializers.ModelSerializer):
+    # Nested serializer for GET requests (serialization)
+    distanceMode = DistanceModeSerializer(read_only=True)
+    # Accepts an ID for POST requests (deserialization)
+    distanceMode_id = serializers.PrimaryKeyRelatedField(
+        queryset=DistanceMode.objects.all(), write_only=True, source='distanceMode'
+    )
+
+    class Meta:
+        model = Co2CalculatorHistory
+        fields = ['id', 'fromCity', 'toCity', 'distance', 'distanceMode', 'distanceMode_id', 'co2']
+
+
+
+class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Genre
         fields = '__all__'
         read_only_fields = ['id']
 
-class PersonSerializer(serializers.ModelSerializer):
 
+class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Person
         fields = '__all__'
 
+
 class MovieSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = models.Movie
-        fields = '__all__'  
+        fields = '__all__'
+
 
 class PolutionMapSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = models.PolutionUserHistory
         exclude = ['user']
 
-class Co2CalculatorSerializer(serializers.ModelSerializer):
-    distanceMode = serializers.PrimaryKeyRelatedField(queryset=DistanceMode.objects.all())
-
-    class Meta:
-        model = Co2CalculatorHistory
-        exclude = ['user']
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -50,5 +64,3 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
-
-

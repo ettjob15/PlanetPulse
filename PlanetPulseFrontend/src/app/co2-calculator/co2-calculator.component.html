@@ -32,19 +32,27 @@
       <mat-form-field appearance="outline">
         <mat-label>Mode of transport</mat-label>
         <mat-select formControlName="mode" required>
-          <mat-option value="car">Car</mat-option>
-          <mat-option value="bus">Bus</mat-option>
-          <mat-option value="train">Train</mat-option>
-          <mat-option value="flight">Flight</mat-option>
-          <mat-option value="tram">Tram</mat-option>
-          <mat-option value="velo">Velo</mat-option>
-          <mat-option value="truck">Truck</mat-option>
-          <mat-option value="boat">Boat</mat-option>
+          <mat-option value="Domestic_flight">Domestic Flight</mat-option>
+          <mat-option value="Diesel_car">Diesel Car</mat-option>
+          <mat-option value="Petrol_car">Petrol Car</mat-option>
+          <mat-option value="Short_haul_flight">Short-haul Flight</mat-option>
+          <mat-option value="Long_haul_flight">Long-haul Flight</mat-option>
+          <mat-option value="Motorbike">Motorbike</mat-option>
+          <mat-option value="Bus">Bus</mat-option>
+          <mat-option value="Bus_city">City Bus</mat-option>
+          <mat-option value="Plug_in_hybrid">Plug-in Hybrid</mat-option>
+          <mat-option value="Electric_car">Electric Car</mat-option>
+          <mat-option value="National_rail">National Rail</mat-option>
+          <mat-option value="Tram">Tram</mat-option>
+          <mat-option value="Underground">Underground</mat-option>
+          <mat-option value="Ferry_foot_passenger">Ferry (Foot Passenger)</mat-option>
+          <mat-option value="e_bike">E-Bike</mat-option>
         </mat-select>
         <mat-error *ngIf="historyFormGroup.get('mode')?.hasError('required')">
           Mode of transport is required.
         </mat-error>
       </mat-form-field>
+      
 
       <div class="button-group">
         <button mat-raised-button color="primary" type="button" (click)="switchFields()">Switch</button>

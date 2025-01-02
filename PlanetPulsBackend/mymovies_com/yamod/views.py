@@ -289,39 +289,61 @@ class PolutionMapViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    
 class Co2CalculatorViewSet(viewsets.ModelViewSet):
     queryset = Co2CalculatorHistory.objects.all()
     serializer_class = Co2CalculatorSerializer
     permission_classes = [IsAuthenticated]
 
-    def list(self, request):
-        if not request.user.is_authenticated:
-            return Response(
-                {"error": "Authentication is required to access this resource."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-        queryset = self.queryset.filter(user=request.user)
-        serializer = self.serializer_class(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
     def create(self, request):
-        data = request.data  
-        distance_mode_id = data.get("distanceMode")  
+        data = request.data
 
-        
+        # Get the ID sent from the frontend
+        distance_mode_id = data.get("distanceMode_id")
+
+        if not distance_mode_id:
+            return Response(
+                {"error": "DistanceMode ID is missing from the request."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        print("Received Distance Mode ID:", distance_mode_id)  # Check if the ID is coming through
+
         try:
+            # Look for the distance mode instance based on the ID
             distance_mode_instance = DistanceMode.objects.get(id=distance_mode_id)
+            print("Found Distance Mode:", distance_mode_instance.name)  # Debugging output
         except DistanceMode.DoesNotExist:
+            print(f"Error: DistanceMode with ID {distance_mode_id} not found.")
             return Response(
                 {"error": f"DistanceMode with ID {distance_mode_id} not found."},
-                status=status.HTTP_400_BAD_REQUEST,
+                status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Update data to match serializer expectations
-        data["distanceMode"] = distance_mode_instance.id
+        emission_factors = {
+            'Domestic_flight': 0.246,
+            'Diesel_car': 0.171,
+            'Petrol_car': 0.170,
+            'Short_haul_flight': 0.151,
+            'Long_haul_flight': 0.148,
+            'Motorbike': 0.114,
+            'Bus': 0.097,
+            'Bus_city': 0.079,
+            'Plug_in_hybrid': 0.068,
+            'Electric_car': 0.047,
+            'National_rail': 0.035,
+            'Tram': 0.0029,
+            'Underground': 0.028,
+            'Ferry_foot_passenger': 0.0019,
+            'e_bike': 0.003
+        }
 
-        # Validate and save
+        mode_name = distance_mode_instance.name
+        emission_factor = emission_factors.get(mode_name, 0)
+        co2_emissions = data.get("distance", 0) * emission_factor 
+
+        data["co2"] = co2_emissions
+        data["distanceMode"] = distance_mode_instance  
+
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
             serializer.save(user=request.user, distanceMode=distance_mode_instance)

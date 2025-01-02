@@ -48,21 +48,13 @@ export class Co2CalculatorComponent {
   historyFormGroup: FormGroup;
   filterControl = new FormControl('');
   displayedColumns: string[] = ['fromCity', 'toCity', 'distance', 'distanceMode', 'co2'];
-  from: string = ''; // Origin location
-  to: string = ''; // Destination location
-  distance: number | null = null; // Distance in kilometers
-  mode: string = ''; // Mode of transport
-  co2Emissions: number | null = null; // Calculated CO2 emissions
-  private modeMapping: { [key: string]: { id: number; name: string } } = {
-    car: { id: 1, name: 'Car' },
-    bus: { id: 2, name: 'Bus' },
-    train: { id: 3, name: 'Train' },
-    flight: { id: 4, name: 'Flight' },
-    tram: { id: 5, name: 'Tram' },
-    velo: { id: 6, name: 'Velo' },
-    truck: { id: 7, name: 'Truck' },
-    boat: { id: 8, name: 'Boat' },
-};
+  from: string = ''; 
+  to: string = ''; 
+  distance: number | null = null; 
+  mode: string = ''; 
+  co2Emissions: number | null = null; 
+  
+
 
   constructor(private dialog: MatDialog,public userService:UserService, 
     private co2calculatorService:Co2CalculatorService) {this.historyFormGroup = new FormGroup({
@@ -101,48 +93,79 @@ export class Co2CalculatorComponent {
   }
 
   calculateCO2(): void {
-    // Check if the form is invalid
+    
     if (this.historyFormGroup.invalid) {
-        this.historyFormGroup.markAllAsTouched();
-        this.showDialog('Please fill out all required fields correctly.');
-        return;
+      this.historyFormGroup.markAllAsTouched();
+      this.showDialog('Please fill out all required fields correctly.');
+      return;
     }
-
-    // Get values from the form
+  
+    
     const { fromCity, toCity, distance, mode } = this.historyFormGroup.value;
-
-    // Calculate CO2 emissions
-    const emissionFactors: { [key: string]: number } = {
-        car: 0.2,
-        bus: 0.05,
-        train: 0.03,
-        flight: 0.25,
-        tram: 0.02,
-        velo: 0,
-        truck: 0.3,
-        boat: 0.15,
+  
+   
+    const modeMapping: { [key: string]: number } = {
+      Domestic_flight: 39,
+      Diesel_car: 40,
+      Petrol_car: 41,
+      Short_haul_flight: 42,
+      Long_haul_flight: 43,
+      Motorbike: 44,
+      Bus: 45,
+      Bus_city: 46,
+      Plug_in_hybrid: 47,
+      Electric_car: 48,
+      National_rail: 49,
+      Tram: 50,
+      Underground: 51,
+      Ferry_foot_passenger: 52,
+      e_bike: 53
     };
-
-    const co2Emissions = distance * (emissionFactors[mode] || 0);
-    const distanceMode = this.modeMapping[mode];
-    if (!distanceMode) {
-        this.showDialog('Invalid mode of transport selected.');
-        return;
+  
+    
+    const distanceModeId = modeMapping[mode];
+  
+    if (!distanceModeId) {
+      this.showDialog('Invalid mode of transport selected.');
+      return;
     }
+  
+    console.log("Selected Mode ID:", distanceModeId);  
+  
+    const emissionFactors: { [key: string]: number } = {
+      Domestic_flight: 0.246,
+      Diesel_car: 0.171,
+      Petrol_car: 0.170,
+      Short_haul_flight: 0.151,
+      Long_haul_flight: 0.148,
+      Motorbike: 0.114,
+      Bus: 0.097,
+      Bus_city: 0.079,
+      Plug_in_hybrid: 0.068,
+      Electric_car: 0.047,
+      National_rail: 0.035,
+      Tram: 0.0029,
+      Underground: 0.028,
+      Ferry_foot_passenger: 0.0019,
+      e_bike: 0.003
+    };
+    const co2Emissions = distance * (emissionFactors[mode] || 0);
 
-    // Save the CO2 calculation
     this.co2calculatorService.create({
-        fromCity,
-        toCity,
-        distance,
-        distanceMode: distanceMode.id, // Pass only the ID
-        co2: co2Emissions,
+      fromCity,
+      toCity,
+      distance,
+      distanceMode: distanceModeId,  
+      co2: co2Emissions
     }).subscribe(() => {
-        this.getHistoryData(); // Refresh history
-        this.resetForm(); // Reset the form
-        this.showDialog('Calculation saved successfully!');
+      this.getHistoryData();  
+      this.resetForm();       
+      this.showDialog('Calculation saved successfully!');
     });
   }
+  
+  
+  
   
   getEmissionFactor(mode: string): number | undefined {
     const emissionFactors: { [key: string]: number } = {
