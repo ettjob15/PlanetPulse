@@ -289,11 +289,24 @@ class PolutionMapViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    
+
+
 class Co2CalculatorViewSet(viewsets.ModelViewSet):
     queryset = Co2CalculatorHistory.objects.all()
     serializer_class = Co2CalculatorSerializer
     permission_classes = [IsAuthenticated]
-
+    
+    def list(self, request):
+        if not request.user.is_authenticated:
+            return Response(
+               {"error": "Authentication is required to access this resource."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        queryset = self.get_queryset().filter(user=request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
     def create(self, request):
         data = request.data
 
