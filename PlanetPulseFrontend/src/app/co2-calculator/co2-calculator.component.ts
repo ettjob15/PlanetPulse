@@ -47,7 +47,8 @@ export class Co2CalculatorComponent {
   subscription: Subscription | undefined;
   historyFormGroup: FormGroup;
   filterControl = new FormControl('');
-  displayedColumns: string[] = ['fromCity', 'toCity', 'distance', 'distanceMode', 'co2'];
+  displayedColumns: string[] = ['fromCity', 'toCity', 'distance', 'distanceMode', 'co2', 'date'];
+
   from: string = ''; 
   to: string = ''; 
   distance: number | null = null; 
@@ -79,11 +80,14 @@ export class Co2CalculatorComponent {
         });
     }
   
-  switchFields() {
-    const temp = this.from;
-    this.from = this.to;
-    this.to = temp;
-  }
+    switchFields() {
+      const from = this.historyFormGroup.get('fromCity')?.value;
+      const to = this.historyFormGroup.get('toCity')?.value;
+      this.historyFormGroup.patchValue({
+        fromCity: to,
+        toCity: from,
+      });
+    }
   ngOnInit() {
     
 
@@ -92,6 +96,7 @@ export class Co2CalculatorComponent {
     }
   }
 
+  
   calculateCO2(): void {
     
     if (this.historyFormGroup.invalid) {
@@ -195,4 +200,5 @@ export class Co2CalculatorComponent {
       data: { message }
     });
   }
+  
 }

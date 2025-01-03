@@ -58,12 +58,25 @@
         <button mat-raised-button color="primary" type="button" (click)="switchFields()">Switch</button>
         <button mat-raised-button color="accent" type="submit">Calculate CO2</button>
       </div>
+      <div class="calculation-note" style="margin-top: 15px; text-align: center; font-size: 16px; color: #fff; background-color: #007BFF; padding: 10px; border-radius: 5px; font-weight: bold;">
+        The factors for calculation are sourced from 
+        <a href="https://ourworldindata.org/grapher/carbon-footprint-travel-mode" target="_blank" rel="noopener noreferrer" style="color: #FFD700; text-decoration: underline;">
+          this website
+        </a>.
+      </div>
     </form>
   </div>
 
   <div class="history-section" style="flex: 2; max-width: 60%; overflow: auto; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;">
     <h3 style="text-align: center;">Calculation History</h3>
     <table mat-table [dataSource]="history" style="width: 100%" class="mat-elevation-z4">
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> Date </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.date | date:'shortDate' }}
+        </td>
+      </ng-container>
+      
       <!-- From Column -->
       <ng-container matColumnDef="fromCity">
         <th mat-header-cell *matHeaderCellDef> From </th>
@@ -87,8 +100,12 @@
       <!-- Mode Column -->
       <ng-container matColumnDef="distanceMode">
         <th mat-header-cell *matHeaderCellDef> Mode of Transport </th>
-        <td mat-cell *matCellDef="let element"> {{ element.distanceMode?.name }} </td>
+        <td mat-cell *matCellDef="let element">
+          {{ element.distanceMode?.name.replace('_', ' ') | titlecase }}
+        </td>
       </ng-container>
+      
+      
 
       <!-- CO2 Emissions Column -->
       <ng-container matColumnDef="co2">

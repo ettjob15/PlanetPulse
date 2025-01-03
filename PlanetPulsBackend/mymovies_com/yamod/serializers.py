@@ -23,6 +23,8 @@ class Co2CalculatorSerializer(serializers.ModelSerializer):
         model = Co2CalculatorHistory
         fields = ['id', 'fromCity', 'toCity', 'distance', 'distanceMode', 'distanceMode_id', 'co2', 'date']
 
+    def get_distanceMode(self, obj):
+        return obj.distanceMode.friendly_name
 
 
 class GenreSerializer(serializers.ModelSerializer):
