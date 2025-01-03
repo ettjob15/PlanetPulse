@@ -21,7 +21,7 @@ class Co2CalculatorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Co2CalculatorHistory
-        fields = ['id', 'fromCity', 'toCity', 'distance', 'distanceMode', 'distanceMode_id', 'co2']
+        fields = ['id', 'fromCity', 'toCity', 'distance', 'distanceMode', 'distanceMode_id', 'co2', 'date']
 
 
 

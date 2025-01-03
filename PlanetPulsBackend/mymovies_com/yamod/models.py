@@ -75,6 +75,7 @@ class Co2CalculatorHistory(models.Model):
     distance = models.DecimalField(max_digits=10,decimal_places=3)
     distanceMode = models.ForeignKey(DistanceMode,on_delete=models.PROTECT,related_name="mode")
     co2 = models.DecimalField(max_digits=10,decimal_places=3)
+    date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.fromCity} - {self.toCity} - {self.user.username}  "
