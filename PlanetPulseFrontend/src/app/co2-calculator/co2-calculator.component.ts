@@ -18,6 +18,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule, MatPseudoCheckboxModule } from '@angular/material/core';
 import { Validators } from '@angular/forms';
+import{Chart,registerables} from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+Chart.register(ChartDataLabels);
+Chart.register(...registerables);
 
 
 @Component({
@@ -37,12 +42,15 @@ import { Validators } from '@angular/forms';
     MatButtonModule,
     MatListModule,
     MatDialogModule,
-    DialogComponent
+    DialogComponent,
+ 
+
   ],
   templateUrl: './co2-calculator.component.html',
   styleUrls: ['./co2-calculator.component.scss']
 })
 export class Co2CalculatorComponent {
+  chart: Chart | undefined;
   history: Co2Calculator[] = [];
   subscription: Subscription | undefined;
   historyFormGroup: FormGroup;
@@ -67,6 +75,7 @@ export class Co2CalculatorComponent {
   getHistoryData() {
       this.co2calculatorService.getCo2CalculatorHistory().subscribe((polutionMapHistoryData) => {
         this.history = polutionMapHistoryData;
+        this.renderChart();
       });
       this.subscription = this.filterControl.valueChanges
         .pipe(
@@ -79,6 +88,49 @@ export class Co2CalculatorComponent {
           this.history = response;
         });
     }
+    renderChart() {
+      const labels = this.history.map((item) => `${item.fromCity} → ${item.toCity}`);
+    const data = this.history.map((item) => item.co2);
+
+    if (this.chart) {
+      this.chart.destroy();
+    }
+    const ctx = document.getElementById('co2Chart') as HTMLCanvasElement;
+    this.chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'CO₂ Emissions (kg)',
+            data: data,
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+        },
+        scales: {
+          y: {
+            type: 'logarithmic', 
+            ticks: {
+              callback: function (value) {
+                return Number(value.toString()); 
+              },
+            },
+          },
+        },
+      },
+    });
+  }
   
     switchFields() {
       const from = this.historyFormGroup.get('fromCity')?.value;
