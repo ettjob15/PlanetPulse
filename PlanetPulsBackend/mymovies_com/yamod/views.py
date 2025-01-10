@@ -304,8 +304,43 @@ class Co2CalculatorViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
         queryset = self.get_queryset().filter(user=request.user)
+        # Apply filters
+        distance_mode = request.GET.get('distanceMode')
+        if distance_mode:
+            queryset = queryset.filter(distanceMode__name=distance_mode)
+
+        # Apply sorting
+        sort_by_distance = request.GET.get('sortByDistance')
+        print(sort_by_distance)
+        if sort_by_distance == 'distance-desc':
+            queryset = queryset.order_by('-distance')
+        elif sort_by_distance == 'distance-asc':
+            queryset = queryset.order_by('distance')
+        sort_by_co2 = request.GET.get('sortByCo2')
+        if sort_by_co2 == 'co2-asc':
+            queryset = queryset.order_by('co2')
+        elif sort_by_co2 == 'co2-desc':
+            queryset = queryset.order_by('-co2')
+
+        sort_by_date = request.GET.get('sortByDate')
+        if sort_by_date == 'date-asc':
+            queryset = queryset.order_by('date')
+        elif sort_by_date == 'date-desc':
+            queryset = queryset.order_by('-date')
+        
+        search_term = request.GET.get('search')
+        if search_term:
+            queryset = queryset.filter(
+                Q(fromCity__icontains=search_term) |
+                Q(toCity__icontains=search_term) |
+                Q(distanceMode__name__icontains=search_term) |
+                Q(co2__icontains=search_term) |
+                Q(date__icontains=search_term)
+            )
+
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+        
     
     def create(self, request):
         data = request.data

@@ -54,7 +54,16 @@ export class Co2CalculatorComponent {
   history: Co2Calculator[] = [];
   subscription: Subscription | undefined;
   historyFormGroup: FormGroup;
+  filterDistanceMode = new FormControl(''); 
+  sortOption = new FormControl('');
+  sortOptionCo2 = new FormControl('');
+  sortOptionDate = new FormControl('');
+  sortOptionUnified = new FormControl('');
   filterControl = new FormControl('');
+  searchControl = new FormControl('');
+  fromCityControl = new FormControl('');
+  toCityControl = new FormControl('');
+  
   displayedColumns: string[] = ['fromCity', 'toCity', 'distance', 'distanceMode', 'co2', 'date'];
 
   from: string = ''; 
@@ -72,8 +81,23 @@ export class Co2CalculatorComponent {
       distance: new FormControl(null, [Validators.required, Validators.min(1)]),
       mode: new FormControl('', [Validators.required]),
     })};
-  getHistoryData() {
-      this.co2calculatorService.getCo2CalculatorHistory().subscribe((polutionMapHistoryData) => {
+  getHistoryData(searchTerm: string = '') {
+    const distanceMode: string | undefined = this.filterDistanceMode.value || undefined;
+    const sortOption = this.sortOptionUnified.value;
+  
+    let sortByDistance: string | undefined;
+    let sortByCo2: string | undefined;
+    let sortByDate: string | undefined;
+
+      if (sortOption?.includes('distance')) {
+        sortByDistance = sortOption;
+    } else if (sortOption?.includes('co2')) {
+      sortByCo2 = sortOption;
+    } else if (sortOption?.includes('date')) {
+      sortByDate = sortOption;
+    }
+   
+      this.co2calculatorService.getCo2CalculatorHistory(distanceMode,sortByDistance,sortByCo2,sortByDate).subscribe((polutionMapHistoryData) => {
         this.history = polutionMapHistoryData;
         this.renderChart();
       });
@@ -81,13 +105,32 @@ export class Co2CalculatorComponent {
         .pipe(
           debounceTime(500),
           switchMap(() => {
-            return this.co2calculatorService.getCo2CalculatorHistory();
+            return this.co2calculatorService.getCo2CalculatorHistory(distanceMode, sortByDistance, sortByDate,sortByCo2);
           })
         )
         .subscribe((response) => {
           this.history = response;
         });
-    }
+      } 
+    
+      applySearch(searchTerm: string) {
+        if (!searchTerm) {
+          this.getHistoryData(); // Reset to original data if search is cleared
+          return;
+        }
+    
+        const lowercasedTerm = searchTerm.toLowerCase();
+    
+        // Filter the history data
+        this.history = this.history.filter((entry) =>
+          Object.values(entry).some((value) =>
+            value.toString().toLowerCase().includes(lowercasedTerm)
+          )
+        );
+      }
+
+
+
     renderChart() {
       const labels = this.history.map((item) => `${item.fromCity} → ${item.toCity}`);
     const data = this.history.map((item) => item.co2);
@@ -130,24 +173,70 @@ export class Co2CalculatorComponent {
         },
       },
     });
-  }
-  
-    switchFields() {
-      const from = this.historyFormGroup.get('fromCity')?.value;
-      const to = this.historyFormGroup.get('toCity')?.value;
-      this.historyFormGroup.patchValue({
-        fromCity: to,
-        toCity: from,
-      });
     }
-  ngOnInit() {
+  
+    switchFields(): void {
+      const from = this.fromCityControl.value;
+      const to = this.toCityControl.value;
+    
+      this.fromCityControl.setValue(to); // Swap the values
+      this.toCityControl.setValue(from);
+    }
+
+    filterFromCity(value: string | null): void {
+      if (!value) {
+        this.historyFormGroup.get('fromCity')?.setValue('');
+        return;
+      }
+  
+      // Ensure only letters are allowed
+      const filteredValue = value.replace(/[^a-zA-Z]/g, '');
+      this.historyFormGroup.get('fromCity')?.setValue(filteredValue, { emitEvent: false });
+    }
+  
+    // Filter logic for To City
+    filterToCity(value: string | null): void {
+      if (!value) {
+        this.historyFormGroup.get('toCity')?.setValue('');
+        return;
+      }
+  
+      // Ensure only letters are allowed
+      const filteredValue = value.replace(/[^a-zA-Z]/g, '');
+      this.historyFormGroup.get('toCity')?.setValue(filteredValue, { emitEvent: false });
+    }
+    
+    ngOnInit() {
     
 
     if (this.userService.isLoggedInSignal()) {
       this.getHistoryData();
     }
-  }
+    // Subscribe to fromCityControl changes
+  this.fromCityControl.valueChanges.subscribe((value) => {
+    this.filterFromCity(value);
+  });
 
+  // Subscribe to toCityControl changes
+  this.toCityControl.valueChanges.subscribe((value) => {
+    this.filterToCity(value);
+  });
+
+    this.filterDistanceMode.valueChanges.subscribe(() => {
+      this.getHistoryData();
+    });
+  
+    this.sortOptionUnified.valueChanges.subscribe(() => {
+      this.getHistoryData();
+    });
+
+    this.searchControl.valueChanges.subscribe((searchTerm) => {
+          if (searchTerm !== null) {
+            this.applySearch(searchTerm); // Apply search filtering
+          }
+        });
+  }
+  
   
   calculateCO2(): void {
     
