@@ -38,6 +38,10 @@ export class UserService {
     return permissions ? permission in permissions : false;
     }
 
+  register(userData: { username: string; password: string; confirmPassword: string }) {
+      return this.http.post('/api/register', userData);
+    }
+
   login(userData: { username: string; password: string }): void {
     this.http.post('/api/token/', userData).subscribe({
       next: (res: any) => {
