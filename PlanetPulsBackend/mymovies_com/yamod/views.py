@@ -8,7 +8,9 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from django.db import IntegrityError
 from rest_framework.permissions import IsAuthenticated
-from .serializers import MovieSerializer, GenreSerializer, PersonSerializer, PolutionMapSerializer, Co2CalculatorSerializer
+from .serializers import MovieSerializer, GenreSerializer, PersonSerializer, PolutionMapSerializer, Co2CalculatorSerializer, UserSerializer
+from rest_framework.decorators import api_view
+
 
 from . import models
 
@@ -398,3 +400,13 @@ class Co2CalculatorViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def register(request):
+    if request.method == 'POST':
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
