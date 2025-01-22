@@ -4,7 +4,7 @@ export interface Co2Calculator {
     distance: number;
     distanceMode: DistanceMode | number;
     co2: number;
-    //date: Date;
+    date: Date;
 
 }
 export interface DistanceMode{
