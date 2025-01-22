@@ -3,6 +3,8 @@ from . import models
 from .models import Co2CalculatorHistory, DistanceMode
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth.models import User
+from rest_framework import serializers
 
 
 class DistanceModeSerializer(serializers.ModelSerializer):
@@ -21,8 +23,10 @@ class Co2CalculatorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Co2CalculatorHistory
-        fields = ['id', 'fromCity', 'toCity', 'distance', 'distanceMode', 'distanceMode_id', 'co2']
+        fields = ['id', 'fromCity', 'toCity', 'distance', 'distanceMode', 'distanceMode_id', 'co2', 'date']
 
+    def get_distanceMode(self, obj):
+        return obj.distanceMode.friendly_name
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -64,3 +68,17 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            password=validated_data['password']
+        )
+        return user

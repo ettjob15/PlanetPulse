@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from yamod.views import GenreViewSet, MovieViewSet, PersonViewSet, PolutionMapViewSet, Co2CalculatorViewSet
+from yamod.views import GenreViewSet, MovieViewSet, PersonViewSet, PolutionMapViewSet, Co2CalculatorViewSet, register
 
 
 
@@ -25,5 +25,6 @@ urlpatterns = [
     path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include(router.urls)),
+    path('api/register/', register, name='register'),
 ]
 

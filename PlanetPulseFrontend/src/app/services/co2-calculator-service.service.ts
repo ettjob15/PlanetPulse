@@ -9,9 +9,20 @@ export class Co2CalculatorService {
 
   constructor(private http: HttpClient) { }
 
-  getCo2CalculatorHistory() {
-    return this.http.get<Co2Calculator[]>('/api/co2calculator/');
-  }
+  getCo2CalculatorHistory(distanceMode?: string,
+    sortByDistance?: string,
+    sortByCo2?: string,
+    sortByDate?: string,
+    search?: string) {
+    let params: any = {};
+    if (distanceMode) params['distanceMode'] = distanceMode;
+    if (sortByDistance) params['sortByDistance'] = sortByDistance;
+    if (sortByCo2) params['sortByCo2'] = sortByCo2;
+    if (sortByDate) params['sortByDate'] = sortByDate;
+    if (search) params['search'] = search;
+
+    return this.http.get<Co2Calculator[]>('/api/co2calculator/', { params });
+}
 
   create(co2CalculatorHistory: Co2Calculator) {
     // Construct the payload for POST

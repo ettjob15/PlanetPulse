@@ -6,6 +6,8 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { UserService } from './services/user.service';
+import{Chart,registerables} from 'chart.js';
+Chart.register(...registerables);
 @Component({
   selector: 'app-root',
   standalone: true,
