@@ -20,7 +20,6 @@ import { MatNativeDateModule, MatPseudoCheckboxModule } from '@angular/material/
 import { Validators } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-
 Chart.register(ChartDataLabels);
 Chart.register(...registerables);
 
@@ -50,6 +49,8 @@ Chart.register(...registerables);
   styleUrls: ['./co2-calculator.component.scss']
 })
 export class Co2CalculatorComponent {
+  enableFromCityFilter : boolean =true;
+  enableToCityFilter : boolean =true;
   chart: Chart | undefined;
   history: Co2Calculator[] = [];
   subscription: Subscription | undefined;
@@ -71,7 +72,7 @@ export class Co2CalculatorComponent {
   distance: number | null = null;
   mode: string = '';
   co2Emissions: number | null = null;
-
+  
 
 
   constructor(private dialog: MatDialog, public userService: UserService,
@@ -185,6 +186,9 @@ export class Co2CalculatorComponent {
   }
 
   filterFromCity(value: string | null): void {
+    if(!this.enableFromCityFilter){
+      return;
+    }
     if (!value) {
       this.historyFormGroup.get('fromCity')?.setValue('');
       return;
@@ -193,11 +197,16 @@ export class Co2CalculatorComponent {
     // Ensure only letters are allowed
     const filteredValue = value.replace(/[^a-zA-Z]/g, '');
     this.historyFormGroup.get('fromCity')?.setValue(filteredValue, { emitEvent: false });
+    this.enableFromCityFilter=false;
     this.fromCityControl.setValue(filteredValue);
+    this.enableFromCityFilter=true;
   }
 
   // Filter logic for To City
   filterToCity(value: string | null): void {
+    if(!this.enableToCityFilter){
+      return;
+    }
     if (!value) {
       this.historyFormGroup.get('toCity')?.setValue('');
       return;
@@ -206,8 +215,12 @@ export class Co2CalculatorComponent {
     // Ensure only letters are allowed
     const filteredValue = value.replace(/[^a-zA-Z]/g, '');
     this.historyFormGroup.get('toCity')?.setValue(filteredValue, { emitEvent: false });
+    this.historyFormGroup.get('toCity')?.value.replace(/[^a-zA-Z]/g, '');
+    this.enableToCityFilter=false;
     this.toCityControl.setValue(filteredValue);
+    this.enableToCityFilter=true;
   }
+
 
   ngOnInit() {
 
