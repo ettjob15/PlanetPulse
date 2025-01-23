@@ -63,4 +63,12 @@ export class UserService {
     this.isLoggedInSignal.set(false);
     this.router.navigate(['polution-map']);
   }
+  
+  getUserProfile(): Observable<any> {
+    return this.http.get('/api/profile/');
+  }
+  getPolutionMap(): Observable<any> {
+    return this.http.get('/api/polutionmap/');
+  }
+
 }

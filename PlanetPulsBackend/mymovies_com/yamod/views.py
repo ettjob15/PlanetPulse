@@ -9,7 +9,8 @@ from rest_framework.response import Response
 from django.db import IntegrityError
 from rest_framework.permissions import IsAuthenticated
 from .serializers import MovieSerializer, GenreSerializer, PersonSerializer, PolutionMapSerializer, Co2CalculatorSerializer, UserSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, action
+from django.contrib.auth.models import User
 
 
 from . import models
@@ -274,6 +275,7 @@ class PolutionMapViewSet(viewsets.ModelViewSet):
     queryset = models.PolutionUserHistory.objects.all()
     serializer_class = PolutionMapSerializer
     permission_classes = [IsAuthenticated]
+
     def list(self, request):
         if not request.user.is_authenticated:
             return Response(
@@ -291,6 +293,16 @@ class PolutionMapViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def destroy(self, request, pk=None):
+        instance = get_object_or_404(models.PolutionUserHistory, pk=pk, user=request.user)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    @action(detail=False, methods=['delete'])
+    def delete_all(self, request):
+        queryset = self.get_queryset().filter(user=request.user)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
 
 
@@ -410,3 +422,12 @@ def register(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_profile(request):
+    user = request.user
+    serializer = UserSerializer(user)
+    return Response(serializer.data)

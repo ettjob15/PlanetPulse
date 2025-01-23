@@ -1,1 +1,16 @@
-<p>user-profile works!</p>
+<mat-card>
+    <h2 class="profile-heading">User Profile</h2>
+    <p class="username"><strong>Username:</strong> {{ username }}</p>
+  
+    <h3>Pollution History</h3>
+    <div *ngIf="pollutionHistories && pollutionHistories.length > 0">
+      <button mat-raised-button color="primary" (click)="deleteAllPollutionHistories()">Delete All</button>
+      <div *ngFor="let history of pollutionHistories">
+        <p>{{ history.city }} - {{ history.dateValue }}</p>
+        <button mat-raised-button color="warn" (click)="deletePollutionHistory(history.id)">Delete</button>
+      </div>
+    </div>
+    <div *ngIf="pollutionHistories && pollutionHistories.length === 0">
+      <p>No pollution history available.</p>
+    </div>
+  </mat-card>
