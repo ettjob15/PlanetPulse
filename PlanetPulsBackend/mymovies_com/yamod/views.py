@@ -8,7 +8,7 @@ from .models import DistanceMode, Co2CalculatorHistory
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import MovieSerializer, GenreSerializer, PersonSerializer, PolutionMapSerializer, Co2CalculatorSerializer, UserSerializer
+from .serializers import  PolutionMapSerializer, Co2CalculatorSerializer, UserSerializer
 from rest_framework.decorators import api_view, permission_classes, action
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -92,9 +92,18 @@ class PolutionMapViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def destroy(self, request, pk=None):
+        if not request.user.is_authenticated:
+            return Response(
+                {"error": "Authentication is required to access this resource."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        
         instance = get_object_or_404(models.PolutionUserHistory, pk=pk, user=request.user)
-        instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        try:
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT) 
+        except IntegrityError:
+            return Response({"errors":["Something is very very wrong!!!!!"]},status=status.HTTP_409_CONFLICT)
     
     @action(detail=False, methods=['delete'])
     def delete_all(self, request):
@@ -102,27 +111,6 @@ class PolutionMapViewSet(viewsets.ModelViewSet):
         queryset.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-
-    def destroy(self, request,pk):
-        if not request.user.is_authenticated:
-            return Response(
-                {"error": "Authentication is required to access this resource."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-        instance = self.get_object() 
-        user_id = instance.user.id
-        print(user_id)
-        print(request.user.id)
-        if request.user.id != user_id:
-            return Response(
-                {"error": "You do not own this Object"},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-        try:
-            self.perform_destroy(instance)
-            return Response(status=status.HTTP_204_NO_CONTENT) 
-        except IntegrityError:
-            return Response({"errors":["Something is very very wrong!!!!!"]},status=status.HTTP_409_CONFLICT)
 
 
 class Co2CalculatorViewSet(viewsets.ModelViewSet):

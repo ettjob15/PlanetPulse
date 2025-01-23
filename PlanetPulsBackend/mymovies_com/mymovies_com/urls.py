@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from yamod.views import GenreViewSet, MovieViewSet, PersonViewSet, PolutionMapViewSet, Co2CalculatorViewSet, register, user_profile, change_password
+from yamod.views import PolutionMapViewSet, Co2CalculatorViewSet, register, user_profile, change_password
 
 
 
