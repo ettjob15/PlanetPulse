@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import MovieSerializer, GenreSerializer, PersonSerializer, PolutionMapSerializer, Co2CalculatorSerializer, UserSerializer
 from rest_framework.decorators import api_view, permission_classes, action
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 
 
 from . import models
@@ -443,3 +444,18 @@ def user_profile(request):
     user = request.user
     serializer = UserSerializer(user)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    user = request.user
+    new_password = request.data.get('newPassword')
+
+    if not new_password:
+        return Response({"error": "New password is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    user.password = make_password(new_password)
+    user.save()
+
+    return Response({"success": "Password changed successfully"}, status=status.HTTP_200_OK)

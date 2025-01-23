@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from yamod.views import GenreViewSet, MovieViewSet, PersonViewSet, PolutionMapViewSet, Co2CalculatorViewSet, register, user_profile
+from yamod.views import GenreViewSet, MovieViewSet, PersonViewSet, PolutionMapViewSet, Co2CalculatorViewSet, register, user_profile, change_password
 
 
 
@@ -27,5 +27,6 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/register/', register, name='register'),
     path('api/profile/', user_profile, name='user_profile'),
+    path('api/change-password/', change_password, name='change_password'),
 ]
 

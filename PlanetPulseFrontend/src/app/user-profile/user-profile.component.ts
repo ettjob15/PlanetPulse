@@ -34,13 +34,20 @@ export class UserProfileComponent implements OnInit {
   username: string = '';
   pollutionHistories: any[] = [];
   co2CalculatorHistories: any[] = [];
-
+  showChangePassword: boolean = false;
+  changePasswordForm: FormGroup;
 
   constructor(
     private userService: UserService,
     private snackBar: MatSnackBar,
-    private http: HttpClient
-  ) {}
+    private http: HttpClient,
+    private fb: FormBuilder
+  ) {
+    this.changePasswordForm = this.fb.group({
+      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      repeatPassword: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
 
   ngOnInit() {
     this.loadUserProfile();
@@ -123,7 +130,6 @@ export class UserProfileComponent implements OnInit {
     );
   }
 
-
   deleteCo2CalculatorHistory(co2CalculatorHistoryId: number) {
     this.http.delete(`/api/co2calculator/${co2CalculatorHistoryId}/`).subscribe(
       () => {
@@ -156,5 +162,56 @@ export class UserProfileComponent implements OnInit {
         });
       }
     );
+  }
+
+  toggleChangePassword() {
+    this.showChangePassword = !this.showChangePassword;
+  }
+
+  cancelChangePassword() {
+    this.showChangePassword = false;
+    this.changePasswordForm.reset();
+  }
+
+  changePassword() {
+    if (this.changePasswordForm.valid) {
+      const newPassword = this.changePasswordForm.value.newPassword;
+      const repeatPassword = this.changePasswordForm.value.repeatPassword;
+
+      if (newPassword !== repeatPassword) {
+        this.snackBar.open('Passwords do not match', 'Close', {
+          duration: 3000,
+        });
+        return;
+      }
+
+      this.http.post('/api/change-password/', { newPassword }).subscribe(
+        () => {
+          this.snackBar.open('Password changed successfully', 'Close', {
+            duration: 3000,
+          });
+          this.cancelChangePassword();
+        },
+        (error) => {
+          this.snackBar.open('Failed to change password', 'Close', {
+            duration: 3000,
+          });
+        }
+      );
+    } else {
+      if (this.changePasswordForm.hasError('passwordsMismatch')) {
+        this.snackBar.open('Passwords do not match', 'Close', {
+          duration: 3000,
+        });
+      } else if (this.changePasswordForm.get('newPassword')?.hasError('minlength')) {
+        this.snackBar.open('Password is too short, must be at least 6 characters', 'Close', {
+          duration: 3000,
+        });
+      } else {
+        this.snackBar.open('Form is invalid', 'Close', {
+          duration: 3000,
+        });
+      }
+    }
   }
 }
