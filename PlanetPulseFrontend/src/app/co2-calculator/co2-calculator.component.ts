@@ -65,7 +65,7 @@ export class Co2CalculatorComponent {
   fromCityControl = new FormControl('');
   toCityControl = new FormControl('');
   dataSource = new MatTableDataSource<Co2Calculator>(this.history);
-  displayedColumns: string[] = ['fromCity', 'toCity', 'distance', 'distanceMode', 'co2', 'date'];
+  displayedColumns: string[] = ['fromCity', 'toCity', 'distance', 'distanceMode', 'co2', 'date','delete'];
 
   from: string = '';
   to: string = '';
@@ -223,8 +223,6 @@ export class Co2CalculatorComponent {
 
 
   ngOnInit() {
-
-
     if (this.userService.isLoggedInSignal()) {
       this.getHistoryData();
     }
@@ -366,5 +364,10 @@ export class Co2CalculatorComponent {
       data: { message }
     });
   }
-
+  deleteCo2HistoryEntry(id: number) {
+    this.co2calculatorService.delete(id).subscribe(() => {
+      this.showDialog("Entry deleted!");
+      this.ngOnInit();
+    });
+  }
 }

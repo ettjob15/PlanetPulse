@@ -23,7 +23,7 @@ export class AboutUsComponent {
       image: '/assets/vega.jpg'
     },
     {
-      name: 'Butot Florian',
+      name: 'Boutot Florian',
       position: 'Member: Co2 Calculator',
       description: 'Paul manages multiple projects and ensures they are completed on time and within budget.',
       image: '/assets/florian.jpg'

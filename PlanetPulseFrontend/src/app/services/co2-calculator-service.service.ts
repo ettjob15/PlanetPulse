@@ -6,6 +6,11 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class Co2CalculatorService {
+  delete(id: number) {
+      let params: any = {};
+      if (id) params['id'] = id;
+      return this.http.delete(`/api/co2calculator/${id}/`);
+    }
 
   constructor(private http: HttpClient) { }
 

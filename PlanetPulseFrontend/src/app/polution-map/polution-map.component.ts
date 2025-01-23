@@ -26,6 +26,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule, MatPseudoCheckboxModule } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../dialog/dialog.component';
 
 
 @Component({
@@ -44,22 +46,26 @@ import { MatNativeDateModule, MatPseudoCheckboxModule } from '@angular/material/
     MatCardModule,
     MatNativeDateModule,
     MatPseudoCheckboxModule,
-    CommonModule,],
+    CommonModule,
+    DialogComponent,],
   templateUrl: './polution-map.component.html',
   styleUrl: './polution-map.component.scss'
 })
 
 export class PolutionMapComponent {
-  formButtonDisabled:boolean=true;
+  sortOptionUnified = new FormControl('');
+  filterPolutionIndexMode = new FormControl('');
+  formButtonDisabled: boolean = true;
   polutionMapHistory: PolutionMapHistory[] = [];
+  searchControl = new FormControl('');
   cityName = signal('');
   filterControl = new FormControl('');
   polutionMapFormGroup: FormGroup;
   cityNameDisplay = signal('');
   airQualityIndex = signal<number | null>(null);
   cityNotFound = signal(false);
-  displayedColumns: string[] = ['dateValue','city', 'polutionIndex', 'coValue',
-    'no2Value', 'nh3Value', 'o3Value', 'pm10Value', 'pm25Value', 'so2Value'];
+  displayedColumns: string[] = ['dateValue', 'city', 'polutionIndex', 'coValue',
+    'no2Value', 'nh3Value', 'o3Value', 'pm10Value', 'pm25Value', 'so2Value', 'delete'];
   map!: L.Map;
   marker!: L.Marker;
   aqiCircle!: L.Circle;
@@ -84,13 +90,13 @@ export class PolutionMapComponent {
   toggleMap() {
     this.mapCollapsed = !this.mapCollapsed;
   }
-  
+
 
   toggleHistory() {
     this.isHistoryExpanded = !this.isHistoryExpanded;
   }
 
-  constructor(private polutionMapService: PolutionMapServiceService, private openWeatherService: OpenweatherService, public userService: UserService) {
+  constructor(private dialog: MatDialog, private polutionMapService: PolutionMapServiceService, private openWeatherService: OpenweatherService, public userService: UserService) {
     this.polutionMapFormGroup = new FormGroup({
       dateValue: new FormControl(new Date()),
       city: new FormControl(''),
@@ -103,6 +109,7 @@ export class PolutionMapComponent {
       polutionIndex: new FormControl(0),
       so2Value: new FormControl(0),
     });
+    this.filterPolutionIndexMode.setValue("0");
   }
 
   ngOnInit() {
@@ -114,17 +121,56 @@ export class PolutionMapComponent {
 
     if (this.userService.isLoggedInSignal()) {
       this.getHistoryData();
+
+      this.filterPolutionIndexMode.valueChanges.subscribe(() => {
+        this.getHistoryData();
+      });
+      this.sortOptionUnified.valueChanges.subscribe(() => {
+        this.getHistoryData();
+      });
+      this.searchControl.valueChanges.subscribe((searchTerm) => {
+        if (searchTerm !== null) {
+          this.applySearch(searchTerm); // Apply search filtering
+        }
+      });
     }
   }
+  applySearch(searchTerm: string) {
+    if (!searchTerm) {
+      this.getHistoryData(); // Reset to original data if search is cleared
+      return;
+    }
+
+    const lowercasedTerm = searchTerm.toLowerCase();
+
+    // Filter the history data
+    this.polutionMapHistory = this.polutionMapHistory.filter((entry) =>
+      Object.values(entry).some((value) =>
+        value.toString().toLowerCase().includes(lowercasedTerm)
+      )
+    );
+  }
+  deletePolutionHistoryEntry(id: number) {
+    const message = "Entry deleted!!"
+    this.polutionMapService.delete(id).subscribe(() => {
+      this.dialog.open(DialogComponent, {
+        data:  {message}
+      });
+      this.ngOnInit();
+    });
+  }
   getHistoryData() {
-    this.polutionMapService.getPolutionMapUserHistory().subscribe((polutionMapHistoryData) => {
+    var sortOption = this.sortOptionUnified.value;
+    console.log(sortOption)
+    var polutionIndex = this.filterPolutionIndexMode.value;
+    this.polutionMapService.getPolutionMapUserHistory(polutionIndex, sortOption).subscribe((polutionMapHistoryData) => {
       this.polutionMapHistory = polutionMapHistoryData;
     });
     this.subscription = this.filterControl.valueChanges
       .pipe(
         debounceTime(500),
         switchMap(() => {
-          return this.polutionMapService.getPolutionMapUserHistory();
+          return this.polutionMapService.getPolutionMapUserHistory(polutionIndex, sortOption);
         })
       )
       .subscribe((response) => {
@@ -175,7 +221,7 @@ export class PolutionMapComponent {
               };
 
               this.airQualityIndex.set(aqi);
-              this.fetchCityBoundaries(lat, lon, aqi, pollutants,false);
+              this.fetchCityBoundaries(lat, lon, aqi, pollutants, false);
             },
             error: (err) => console.error('Error fetching pollution data:', err),
           });
@@ -256,7 +302,7 @@ export class PolutionMapComponent {
 
               // OpenWeather structure => pollutionData.list[0].main.aqi
               this.airQualityIndex.set(pollutionData.list[0].main.aqi);
-              this.fetchCityBoundaries(lat, lon, this.airQualityIndex()!, pollutants,true);
+              this.fetchCityBoundaries(lat, lon, this.airQualityIndex()!, pollutants, true);
 
               /* this.drawAqiCircle(lat, lon, this.airQualityIndex()!); */
             },
@@ -273,7 +319,7 @@ export class PolutionMapComponent {
   }
 
   createPolutionHistoryEntry() {
-    if(!this.formButtonDisabled){
+    if (!this.formButtonDisabled) {
       this.polutionMapService.create(this.polutionMapFormGroup.value).subscribe(() => {
         console.log('New History Entry created successfully!');
         this.ngOnInit();
@@ -300,7 +346,7 @@ export class PolutionMapComponent {
     this.cityName.set(inputElement.value); // cityName aktualisieren
   }
 
-  fetchCityBoundaries(lat: number, lon: number, aqi: number, pollutants: Record<string, number>,addToHistory:boolean) {
+  fetchCityBoundaries(lat: number, lon: number, aqi: number, pollutants: Record<string, number>, addToHistory: boolean) {
     const apiKey = 'e49b6d1e3dc341adbbf8d34997c0c5b5';
     const url = `https://api.geoapify.com/v1/boundaries/part-of?lat=${lat}&lon=${lon}&geometry=geometry_1000&apiKey=${apiKey}`;
 
@@ -359,12 +405,12 @@ export class PolutionMapComponent {
           console.error('No boundary data found for the specified location.');
         }
       }).then(() => {
-        if (this.userService.isLoggedInSignal() && !this.cityNotFound()&&addToHistory) {
+        if (this.userService.isLoggedInSignal() && !this.cityNotFound() && addToHistory) {
           var formButton = document.getElementById("createButton")
           if (formButton != null) {
-            this.formButtonDisabled=false;
+            this.formButtonDisabled = false;
             formButton.click();
-            this.formButtonDisabled=true;
+            this.formButtonDisabled = true;
           }
         }
       })
@@ -410,7 +456,6 @@ export class PolutionMapComponent {
     const popupContent = this.getAqiPopupContent(layer.feature.properties);
     layer.bindPopup(popupContent).openPopup();
   }
-
 
   resetHighlight(e: any) {
     this.geoJsonLayer.resetStyle(e.target);
@@ -467,8 +512,6 @@ export class PolutionMapComponent {
       </div>
     `;
   }
-
-
   getPollutantColor(pollutant: string, value: number): string {
     const ranges: Record<string, { min: number; max: number | null; color: string }[]> = {
       SO2: [

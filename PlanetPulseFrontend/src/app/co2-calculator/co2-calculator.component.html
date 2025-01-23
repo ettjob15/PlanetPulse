@@ -158,7 +158,13 @@
           {{ element.co2 | number:'1.2-2' }} kg
         </td>
       </ng-container>
-
+      <ng-container matColumnDef="delete">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+            <button mat-button color="warn" (click)="deleteCo2HistoryEntry(element.id)">
+              Delete
+            </button>
+        </td></ng-container>
       <!-- Table Header and Rows -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

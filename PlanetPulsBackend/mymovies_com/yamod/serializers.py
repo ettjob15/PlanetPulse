@@ -29,24 +29,6 @@ class Co2CalculatorSerializer(serializers.ModelSerializer):
         return obj.distanceMode.friendly_name
 
 
-class GenreSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Genre
-        fields = '__all__'
-        read_only_fields = ['id']
-
-
-class PersonSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Person
-        fields = '__all__'
-
-
-class MovieSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Movie
-        fields = '__all__'
-
 
 class PolutionMapSerializer(serializers.ModelSerializer):
     class Meta:
