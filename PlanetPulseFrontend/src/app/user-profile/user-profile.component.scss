@@ -1,0 +1,52 @@
+.profile-heading {
+    font-size: 1.5rem; /* Smaller heading */
+  }
+  
+  .username {
+    font-size: 1.2rem; /* Bigger username */
+    margin-bottom: 16px;
+  }
+  
+  .full-width {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  
+  .view-mode p {
+    margin: 8px 0;
+  }
+
+  .history-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .history-section {
+    flex: 1;
+    margin: 0 10px;
+  }
+
+  .calculator-history-section {
+    text-align: left;
+  }
+
+  .small-button {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .small-input {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .change-password-container {
+    margin-top: 10px;
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+

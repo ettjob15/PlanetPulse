@@ -1,1 +1,54 @@
-<p>user-profile works!</p>
+<mat-card>
+    <h2 class="profile-heading">User Profile</h2>
+    <p class="username"><strong>Username:</strong> {{ username }}</p>
+
+    <button *ngIf="!showChangePassword" mat-raised-button color="primary" class="small-button" (click)="toggleChangePassword()">Change Password</button>
+
+    <div *ngIf="showChangePassword" class="change-password-container">
+        <form [formGroup]="changePasswordForm" (ngSubmit)="changePassword()">
+          <mat-form-field class="small-input">
+            <mat-label>New Password</mat-label>
+            <input matInput type="password" formControlName="newPassword" required>
+          </mat-form-field>
+          <mat-form-field class="small-input">
+            <mat-label>Repeat New Password</mat-label>
+            <input matInput type="password" formControlName="repeatPassword" required>
+          </mat-form-field>
+          <div class="button-container">
+            <button mat-raised-button color="primary" type="submit" class="small-button">Change Password</button>
+            <button mat-raised-button color="warn" class="small-button" (click)="cancelChangePassword()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    
+  
+    <div class="history-container">
+      <div class="history-section pollution-history-section">
+        <h3>Pollution History</h3>
+        <div *ngIf="pollutionHistories && pollutionHistories.length > 0">
+          <button mat-raised-button color="primary" (click)="deleteAllPollutionHistories()">Delete All</button>
+          <div *ngFor="let history of pollutionHistories">
+            <p>{{ history.city }} - {{ history.dateValue }}</p>
+            <button mat-raised-button color="warn" (click)="deletePollutionHistory(history.id)">Delete</button>
+          </div>
+        </div>
+        <div *ngIf="pollutionHistories && pollutionHistories.length === 0">
+          <p>No pollution history available.</p>
+        </div>
+      </div>
+  
+      <div class="history-section calculator-history-section">
+        <h3>CO2 Calculator History</h3>
+        <div *ngIf="co2CalculatorHistories && co2CalculatorHistories.length > 0">
+          <button mat-raised-button color="primary" (click)="deleteAllCo2CalculatorHistories()">Delete All</button>
+          <div *ngFor="let history of co2CalculatorHistories">
+            <p>{{ history.fromCity }} to {{ history.toCity }} - {{ history.date }}</p>
+            <button mat-raised-button color="warn" (click)="deleteCo2CalculatorHistory(history.id)">Delete</button>
+          </div>
+        </div>
+        <div *ngIf="co2CalculatorHistories && co2CalculatorHistories.length === 0">
+          <p>No CO2 calculator history available.</p>
+        </div>
+      </div>
+    </div>
+  </mat-card>
