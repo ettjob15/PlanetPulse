@@ -10,6 +10,9 @@ import { UserService } from '../services/user.service';
 import { Co2CalculatorService } from '../services/co2-calculator-service.service';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { MatTableDataSource } from '@angular/material/table';
+import { Co2Calculator } from '../interfaces/co2-calculator';
+
 
 @Component({
   selector: 'app-user-profile',
@@ -30,6 +33,8 @@ import { HttpClient } from '@angular/common/http';
 export class UserProfileComponent implements OnInit {
   username: string = '';
   pollutionHistories: any[] = [];
+  co2CalculatorHistories: any[] = [];
+
 
   constructor(
     private userService: UserService,
@@ -40,6 +45,7 @@ export class UserProfileComponent implements OnInit {
   ngOnInit() {
     this.loadUserProfile();
     this.loadPolutionMap();
+    this.loadCo2CalculatorHistory();
   }
 
   loadUserProfile() {
@@ -64,6 +70,19 @@ export class UserProfileComponent implements OnInit {
       },
       (error) => {
         this.snackBar.open('Failed to load polution map', 'Close', {
+          duration: 3000,
+        });
+      }
+    );
+  }
+
+  loadCo2CalculatorHistory() {
+    this.http.get<Co2Calculator[]>('/api/co2calculator/').subscribe(
+      (histories) => {
+        this.co2CalculatorHistories = histories;
+      },
+      (error) => {
+        this.snackBar.open('Failed to load CO2 calculator history', 'Close', {
           duration: 3000,
         });
       }
@@ -104,4 +123,38 @@ export class UserProfileComponent implements OnInit {
     );
   }
 
+
+  deleteCo2CalculatorHistory(co2CalculatorHistoryId: number) {
+    this.http.delete(`/api/co2calculator/${co2CalculatorHistoryId}/`).subscribe(
+      () => {
+        this.snackBar.open('CO2 calculator history deleted', 'Close', {
+          duration: 3000,
+        });
+        this.co2CalculatorHistories = this.co2CalculatorHistories.filter(
+          (history) => history.id !== co2CalculatorHistoryId
+        );
+      },
+      (error) => {
+        this.snackBar.open('Failed to delete CO2 calculator history', 'Close', {
+          duration: 3000,
+        });
+      }
+    );
+  }
+
+  deleteAllCo2CalculatorHistories() {
+    this.http.delete(`/api/co2calculator/delete_all/`).subscribe(
+      () => {
+        this.snackBar.open('All CO2 calculator histories deleted', 'Close', {
+          duration: 3000,
+        });
+        this.co2CalculatorHistories = [];
+      },
+      (error) => {
+        this.snackBar.open('Failed to delete all CO2 calculator histories', 'Close', {
+          duration: 3000,
+        });
+      }
+    );
+  }
 }

@@ -2,15 +2,33 @@
     <h2 class="profile-heading">User Profile</h2>
     <p class="username"><strong>Username:</strong> {{ username }}</p>
   
-    <h3>Pollution History</h3>
-    <div *ngIf="pollutionHistories && pollutionHistories.length > 0">
-      <button mat-raised-button color="primary" (click)="deleteAllPollutionHistories()">Delete All</button>
-      <div *ngFor="let history of pollutionHistories">
-        <p>{{ history.city }} - {{ history.dateValue }}</p>
-        <button mat-raised-button color="warn" (click)="deletePollutionHistory(history.id)">Delete</button>
+    <div class="history-container">
+      <div class="history-section pollution-history-section">
+        <h3>Pollution History</h3>
+        <div *ngIf="pollutionHistories && pollutionHistories.length > 0">
+          <button mat-raised-button color="primary" (click)="deleteAllPollutionHistories()">Delete All</button>
+          <div *ngFor="let history of pollutionHistories">
+            <p>{{ history.city }} - {{ history.dateValue }}</p>
+            <button mat-raised-button color="warn" (click)="deletePollutionHistory(history.id)">Delete</button>
+          </div>
+        </div>
+        <div *ngIf="pollutionHistories && pollutionHistories.length === 0">
+          <p>No pollution history available.</p>
+        </div>
       </div>
-    </div>
-    <div *ngIf="pollutionHistories && pollutionHistories.length === 0">
-      <p>No pollution history available.</p>
+  
+      <div class="history-section calculator-history-section">
+        <h3>CO2 Calculator History</h3>
+        <div *ngIf="co2CalculatorHistories && co2CalculatorHistories.length > 0">
+          <button mat-raised-button color="primary" (click)="deleteAllCo2CalculatorHistories()">Delete All</button>
+          <div *ngFor="let history of co2CalculatorHistories">
+            <p>{{ history.fromCity }} to {{ history.toCity }} - {{ history.date }}</p>
+            <button mat-raised-button color="warn" (click)="deleteCo2CalculatorHistory(history.id)">Delete</button>
+          </div>
+        </div>
+        <div *ngIf="co2CalculatorHistories && co2CalculatorHistories.length === 0">
+          <p>No CO2 calculator history available.</p>
+        </div>
+      </div>
     </div>
   </mat-card>

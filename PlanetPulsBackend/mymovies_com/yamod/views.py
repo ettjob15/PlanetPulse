@@ -412,6 +412,18 @@ class Co2CalculatorViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+    def destroy(self, request, pk=None):
+        instance = get_object_or_404(Co2CalculatorHistory, pk=pk, user=request.user)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['delete'])
+    def delete_all(self, request):
+        queryset = self.get_queryset().filter(user=request.user)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['POST'])
