@@ -161,27 +161,6 @@ class Co2CalculatorViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    def destroy(self, request,pk):
-        if not request.user.is_authenticated:
-            return Response(
-                {"error": "Authentication is required to access this resource."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-        instance = self.get_object() 
-        user_id = instance.user.id
-        print(user_id)
-        print(request.user.id)
-        if request.user.id != user_id:
-            return Response(
-                {"error": "You do not own this Object"},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-        try:
-            self.perform_destroy(instance)
-            return Response(status=status.HTTP_204_NO_CONTENT) 
-        except IntegrityError:
-            return Response({"errors":["Something is very very wrong!!!!!"]},status=status.HTTP_409_CONFLICT)
-
     
     
     def create(self, request):
@@ -243,9 +222,18 @@ class Co2CalculatorViewSet(viewsets.ModelViewSet):
         
 
     def destroy(self, request, pk=None):
-        instance = get_object_or_404(Co2CalculatorHistory, pk=pk, user=request.user)
-        instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if not request.user.is_authenticated:
+            return Response(
+                {"error": "Authentication is required to access this resource."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        
+        instance = get_object_or_404(models.PolutionUserHistory, pk=pk, user=request.user)
+        try:
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT) 
+        except IntegrityError:
+            return Response({"errors":["Something is very very wrong!!!!!"]},status=status.HTTP_409_CONFLICT)
 
     @action(detail=False, methods=['delete'])
     def delete_all(self, request):
