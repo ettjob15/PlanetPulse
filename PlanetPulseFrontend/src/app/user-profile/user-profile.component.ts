@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatTableDataSource } from '@angular/material/table';
 import { Co2Calculator } from '../interfaces/co2-calculator';
-
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-profile',
@@ -25,23 +25,27 @@ import { Co2Calculator } from '../interfaces/co2-calculator';
     MatButtonModule,
     MatInputModule,
     MatSnackBarModule,
-    MatSelectModule, // Import MatSelectModule here
+    MatSelectModule, 
   ],
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
 })
 export class UserProfileComponent implements OnInit {
   username: string = '';
+  profilePictureUrl: string = '';
   pollutionHistories: any[] = [];
   co2CalculatorHistories: any[] = [];
   showChangePassword: boolean = false;
+  showChangeProfilePicture: boolean = false;
   changePasswordForm: FormGroup;
+  selectedFile: File | null = null;
 
   constructor(
     private userService: UserService,
     private snackBar: MatSnackBar,
     private http: HttpClient,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.changePasswordForm = this.fb.group({
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
@@ -59,6 +63,7 @@ export class UserProfileComponent implements OnInit {
     this.userService.getUserProfile().subscribe(
       (profile) => {
         this.username = profile.username;
+        this.profilePictureUrl = profile.profile?.profile_picture_url || '/assets/logo.png';
       },
       (error) => {
         this.snackBar.open('Failed to load user profile', 'Close', {
@@ -213,5 +218,63 @@ export class UserProfileComponent implements OnInit {
         });
       }
     }
+  }
+
+  toggleChangeProfilePicture() {
+    this.showChangeProfilePicture = !this.showChangeProfilePicture;
+  }
+
+  cancelChangeProfilePicture() {
+    this.showChangeProfilePicture = false;
+    this.selectedFile = null;
+  }
+
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
+  
+  changeProfilePicture(event: Event) {
+    event.preventDefault();
+    if (this.selectedFile) {
+      const formData = new FormData();
+      formData.append('profile_picture', this.selectedFile);
+
+      this.http.post('/api/upload-profile-picture/', formData).subscribe(
+        (response: any) => {
+          this.snackBar.open('Profile picture updated successfully', 'Close', {
+            duration: 3000,
+          });
+          this.profilePictureUrl = response.profile_picture_url;
+          this.cancelChangeProfilePicture();
+        },
+        (error) => {
+          this.snackBar.open('Failed to update profile picture', 'Close', {
+            duration: 3000,
+          });
+        }
+      );
+    }
+  }
+
+  deleteAccount() {
+    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+      this.logoutAndDeleteAccount();
+    }
+  }
+
+  logoutAndDeleteAccount() {
+    this.http.delete('/api/delete-account/').subscribe(
+      () => {
+        this.snackBar.open('Account deleted successfully', 'Close', {
+          duration: 3000,
+        });
+        this.userService.logout();
+      },
+      (error) => {
+        this.snackBar.open('Failed to delete account', 'Close', {
+          duration: 3000,
+        });
+      }
+    );
   }
 }

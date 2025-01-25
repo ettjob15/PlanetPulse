@@ -30,8 +30,8 @@ export class AboutUsComponent {
     },
     {
       name: 'Aigner Nico Luan',
-      position: 'Member: Account Management',
-      description: 'Mary handles all marketing strategies and drives our brand awareness through innovative campaigns.',
+      position: 'Member: Login/out Profile LogoDesign',
+      description: 'Nico likes designing logos for projects.',
       image: '/assets/nico.jpg'
     }
   ];

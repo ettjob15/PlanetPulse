@@ -3,12 +3,17 @@ from sqlite3 import IntegrityError
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.views import View
-from .models import DistanceMode, Co2CalculatorHistory
+from .models import DistanceMode, Co2CalculatorHistory, UserProfile
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import  PolutionMapSerializer, Co2CalculatorSerializer, UserSerializer
+from .serializers import (  
+    PolutionMapSerializer, 
+    Co2CalculatorSerializer, 
+    UserSerializer, 
+    UserProfileSerializer
+    )
 from rest_framework.decorators import api_view, permission_classes, action
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -272,3 +277,27 @@ def change_password(request):
     user.save()
 
     return Response({"success": "Password changed successfully"}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def upload_profile_picture(request):
+    user = request.user
+    profile = user.profile
+
+    if 'profile_picture' in request.FILES:
+        profile.profile_picture = request.FILES['profile_picture']
+        profile.save()
+        profile.profile_picture_url = profile.profile_picture.url
+        profile.save()
+        return Response({"profile_picture_url": profile.profile_picture_url, "success": "Profile picture updated successfully"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Failed to update profile picture"}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_account(request):
+    user = request.user
+    user.delete()
+    return Response({"success": "Account deleted successfully"}, status=status.HTTP_204_NO_CONTENT)

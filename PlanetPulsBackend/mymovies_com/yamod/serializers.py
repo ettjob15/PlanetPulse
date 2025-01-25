@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from . import models
-from .models import Co2CalculatorHistory, DistanceMode
+from .models import Co2CalculatorHistory, DistanceMode, UserProfile
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.models import User
@@ -51,11 +51,18 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['profile_picture', 'profile_picture_url']
+
 
 class UserSerializer(serializers.ModelSerializer):
+    profile = UserProfileSerializer(required=False)
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'password')
+        fields = ['id', 'username', 'password', 'profile']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -64,3 +71,19 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile', {})
+        profile = instance.profile
+
+        instance.username = validated_data.get('username', instance.username)
+        if 'password' in validated_data:
+            instance.set_password(validated_data['password'])
+        instance.save()
+
+        profile.profile_picture_url = profile_data.get('profile_picture_url', profile.profile_picture_url)
+        profile.save()
+
+        return instance
+    
+
