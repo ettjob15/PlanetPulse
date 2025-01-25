@@ -35,7 +35,6 @@ class PolutionMapViewSet(viewsets.ModelViewSet):
         else:
             queryset = self.get_queryset().filter(user=request.user, polutionIndex=polution_Index)
         sortOptions = request.GET.get('sortOption')
-        print(sortOptions)
         if(sortOptions!=''):
             match sortOptions:
                 case 'date-asc':
