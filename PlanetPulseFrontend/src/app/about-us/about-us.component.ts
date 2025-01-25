@@ -25,7 +25,7 @@ export class AboutUsComponent {
     {
       name: 'Boutot Florian',
       position: 'Member: Co2 Calculator',
-      description: 'Florian is a IT Student and manages multiple projects and ensures they are completed on time and within budget.',
+      description: 'Florian is a dedicated IT student with a strong passion for technology and problem-solving. He actively manages multiple projects, overseeing them from start to finish, ensuring they are completed on time and within budget. Florian thrives in environments that present new challenges, always seeking innovative solutions to improve processes and achieve results.Eager to expand his skills, he is constantly looking for opportunities to learn and grow, whether by mastering new programming languages, experimenting with new technologies, or exploring different methodologies. His proactive approach to self-improvement makes him a valuable asset to any team or project he is involved in.',
       image: '/assets/florian.png'
     },
     {
