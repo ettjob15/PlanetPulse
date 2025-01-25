@@ -25,8 +25,8 @@ export class AboutUsComponent {
     {
       name: 'Boutot Florian',
       position: 'Member: Co2 Calculator',
-      description: 'Paul manages multiple projects and ensures they are completed on time and within budget.',
-      image: '/assets/florian.jpg'
+      description: 'Florian is a IT Student and manages multiple projects and ensures they are completed on time and within budget.',
+      image: '/assets/florian.png'
     },
     {
       name: 'Aigner Nico Luan',
