@@ -97,9 +97,9 @@ class PolutionMapViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
         
-        instance = get_object_or_404(models.PolutionUserHistory, pk=pk, user=request.user)
+        instance = self.get_object()
         try:
-            instance.delete()
+            self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT) 
         except IntegrityError:
             return Response({"errors":["Something is very very wrong!!!!!"]},status=status.HTTP_409_CONFLICT)
@@ -116,7 +116,7 @@ class Co2CalculatorViewSet(viewsets.ModelViewSet):
     queryset = Co2CalculatorHistory.objects.all()
     serializer_class = Co2CalculatorSerializer
     permission_classes = [IsAuthenticated]
-    
+
     def list(self, request):
         if not request.user.is_authenticated:
             return Response(
@@ -220,16 +220,15 @@ class Co2CalculatorViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
-    def destroy(self, request, pk=None):
+    def destroy(self, request, pk):
         if not request.user.is_authenticated:
             return Response(
                 {"error": "Authentication is required to access this resource."},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-        
-        instance = get_object_or_404(models.PolutionUserHistory, pk=pk, user=request.user)
+        instance = self.get_object()
         try:
-            instance.delete()
+            self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT) 
         except IntegrityError:
             return Response({"errors":["Something is very very wrong!!!!!"]},status=status.HTTP_409_CONFLICT)
