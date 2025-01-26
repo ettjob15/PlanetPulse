@@ -2,7 +2,7 @@
   <img src="/assets/logo.png" alt="Logo" style="height: 80px; margin-right: auto;" />
   @if(userService.isLoggedInSignal()){
   <button mat-menu-item routerLink="userprofile" class="rounded-button">
-    <img src="/assets/logo.png" alt="Profile" class="profile-img" style="height: 60px;width: 60px;"/>
+    <img [src]="profilePictureUrl || '/assets/logo.png'" alt="Profile" class="profile-img" style="height: 60px;width: 60px;"/>
   </button>
 }
   <button mat-icon-button [matMenuTriggerFor]="movieMenu" class="mobile-menu">

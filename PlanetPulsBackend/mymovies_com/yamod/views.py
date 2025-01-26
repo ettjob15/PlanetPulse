@@ -1,8 +1,11 @@
 import datetime
+import os
 from sqlite3 import IntegrityError
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.views import View
+
+
 from .models import DistanceMode, Co2CalculatorHistory, UserProfile
 
 from rest_framework import viewsets, status
@@ -17,6 +20,7 @@ from .serializers import (
 from rest_framework.decorators import api_view, permission_classes, action
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from urllib.parse import urljoin
 
 
 from . import models
@@ -278,21 +282,35 @@ def change_password(request):
 
     return Response({"success": "Password changed successfully"}, status=status.HTTP_200_OK)
 
+BACKEND_HOST = os.getenv('BACKEND_HOST', 'http://localhost:8000')
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def upload_profile_picture(request):
-    user = request.user
-    profile = user.profile
+    try:
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
 
-    if 'profile_picture' in request.FILES:
-        profile.profile_picture = request.FILES['profile_picture']
-        profile.save()
-        profile.profile_picture_url = profile.profile_picture.url
-        profile.save()
-        return Response({"profile_picture_url": profile.profile_picture_url, "success": "Profile picture updated successfully"}, status=status.HTTP_200_OK)
-    else:
-        return Response({"error": "Failed to update profile picture"}, status=status.HTTP_400_BAD_REQUEST)
+        if 'profile_picture' in request.FILES:
+            
+            profile.profile_picture = request.FILES['profile_picture']
+            profile.save()
+
+            
+            backend_host = request.get_host() 
+            profile_picture_url = urljoin(BACKEND_HOST, profile.profile_picture.url)
+
+           
+            profile.profile_picture_url = profile_picture_url
+            profile.save()
+
+            return Response({
+                "profile_picture_url": profile_picture_url,
+                "success": "Profile picture updated successfully",
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "No profile picture provided"}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"error": f"An error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
 @api_view(['DELETE'])

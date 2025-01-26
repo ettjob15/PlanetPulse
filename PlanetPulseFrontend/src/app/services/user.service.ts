@@ -13,6 +13,9 @@ export class UserService {
   isLoggedIn$ = new BehaviorSubject(false);
   isLoggedInSignal = signal(false);
 
+  username: string = '';
+  profilePictureUrl: string = '';
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -70,5 +73,7 @@ export class UserService {
   getPolutionMap(): Observable<any> {
     return this.http.get('/api/polutionmap/');
   }
+
+
 
 }

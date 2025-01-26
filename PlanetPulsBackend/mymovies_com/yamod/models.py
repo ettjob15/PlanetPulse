@@ -51,7 +51,7 @@ class Co2CalculatorHistory(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
-    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='img/', null=True, blank=True)
     profile_picture_url = models.CharField(max_length=255, default='/assets/logo.png', null=True, blank=True)
 
     def __str__(self):

@@ -30,7 +30,7 @@
         <form (ngSubmit)="changeProfilePicture($event)">
           <input type="file" (change)="onFileSelected($event)" required>
           <div class="button-container">
-            <button mat-raised-button color="primary" type="submit" class="small-button">Upload</button>
+            <button mat-raised-button color="primary" type="submit" class="small-button" (click)="changeProfilePicture($event)">Upload</button>
             <button mat-raised-button color="warn" class="small-button" (click)="cancelChangeProfilePicture()">Cancel</button>
           </div>
       </form>

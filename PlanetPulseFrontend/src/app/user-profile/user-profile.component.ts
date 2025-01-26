@@ -59,7 +59,7 @@ export class UserProfileComponent implements OnInit {
     this.loadCo2CalculatorHistory();
   }
 
-  loadUserProfile() {
+  public loadUserProfile() {
     this.userService.getUserProfile().subscribe(
       (profile) => {
         this.username = profile.username;
