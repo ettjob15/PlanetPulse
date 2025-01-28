@@ -246,6 +246,7 @@ export class UserProfileComponent implements OnInit {
           });
           this.profilePictureUrl = response.profile_picture_url;
           this.cancelChangeProfilePicture();
+          window.location.reload();
         },
         (error) => {
           this.snackBar.open('Failed to update profile picture', 'Close', {
