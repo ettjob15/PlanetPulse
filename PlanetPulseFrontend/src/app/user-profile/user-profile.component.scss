@@ -1,65 +1,107 @@
-.profile-heading {
-    font-size: 1.5rem; /* Smaller heading */
+mat-card {
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    padding: 20px; 
+    margin: 20px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
   }
-
+  
+  .profile-heading {
+    font-size: 1.5rem; 
+  }
+  
   .profile-info {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     margin-bottom: 20px;
   }
-
-  .profile-picture {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  margin-right: 20px;
-}
   
-.username {
-    font-size: 32px;
-    font-style: italic;
+  .profile-picture {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
   }
   
-  .full-width {
-    width: 100%;
+  .username {
+    font-size: 36px;
+    font-style: italic;
+    display: flex;
+    //align-items: center; 
+    height: 100%; 
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap; 
     margin-bottom: 16px;
   }
   
-  .view-mode p {
-    margin: 8px 0;
+  .small-button {
+    font-size: 12px;
+    padding: 5px 15px;
+    width: auto; 
+    border-radius: 4px; 
   }
-
+  
+  .small-input {
+    font-size: 14px; 
+    padding: 5px; 
+    width: auto; 
+    max-width: 300px; 
+    margin-bottom: 10px;
+    box-sizing: border-box; 
+  }
+  
+  .change-password-container,
+  .change-profile-picture-container {
+    margin-top: 10px;
+    border-top: 1px solid #ddd; 
+    padding-top: 10px; 
+    display: flex;
+    flex-direction: column; 
+    gap: 10px; 
+    align-items: flex-start; 
+  }
+  
+  .button-container {
+    display: flex;
+    gap: 10px; 
+    flex-wrap: wrap; 
+  }
+  
+  input[type="file"] {
+    font-size: 12px; 
+    padding: 5px;
+    width: auto; 
+    max-width: 300px; 
+    margin-bottom: 10px;
+  }
+  
+  mat-form-field {
+    font-size: 14px; 
+    width: auto; 
+    max-width: 300px; 
+  }
+  
   .history-container {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap; 
+    gap: 20px; 
   }
-
+  
   .history-section {
     flex: 1;
+    min-width: 300px; 
     margin: 0 10px;
+    border: 1px solid #eee; 
+    padding: 10px; 
+    border-radius: 8px; 
   }
-
-  .calculator-history-section {
-    text-align: left;
+  
+  button, input {
+    border-radius: 4px; 
   }
-
-  .small-button {
-    font-size: 12px;
-    padding: 5px 10px;
-  }
-
-  .small-input {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-
-  .change-password-container {
-    margin-top: 10px;
-  }
-
-  .button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
+  
