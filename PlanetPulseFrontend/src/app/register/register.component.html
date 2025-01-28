@@ -1,37 +1,40 @@
-<mat-card>
-    <form [formGroup]="registerForm" (ngSubmit)="register()">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Username</mat-label>
-        <input matInput formControlName="username" />
-        @if (registerForm.get('username')?.hasError('required')) {
-          <mat-error>Username is required</mat-error>
-        }
-      </mat-form-field>
-  
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password" />
-        @if (registerForm.get('password')?.hasError('required')) {
-          <mat-error>Password is required</mat-error>
-        }
-        @if (registerForm.get('password')?.hasError('minlength')) {
-          <mat-error>Password must be min 6 symbols</mat-error>
-        }
-      </mat-form-field>
-  
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Confirm Password</mat-label>
-        <input matInput type="password" formControlName="confirmPassword" />
-        @if (registerForm.get('confirmPassword')?.hasError('required')) {
-          <mat-error>Confirm Password is required</mat-error>
-        }
-        @if (registerForm.hasError('passwordsMismatch')) {
-          <mat-error>Passwords must match</mat-error>
-        }
-      </mat-form-field>
-  
-      <button mat-raised-button color="primary" type="submit" class="full-width">
-        Register
-      </button>
-    </form>
-  </mat-card>
+<mat-card class="register-card">
+  <mat-card-header>
+    <mat-card-title>Register</mat-card-title>
+  </mat-card-header>
+  <form [formGroup]="registerForm" (ngSubmit)="register()">
+    <mat-form-field appearance="fill" class="small-input">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" />
+      @if (registerForm.get('username')?.hasError('required')) {
+        <mat-error>Username is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="small-input">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" />
+      @if (registerForm.get('password')?.hasError('required')) {
+        <mat-error>Password is required</mat-error>
+      }
+      @if (registerForm.get('password')?.hasError('minlength')) {
+        <mat-error>Password must be min 6 symbols</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="small-input">
+      <mat-label>Confirm Password</mat-label>
+      <input matInput type="password" formControlName="confirmPassword" />
+      @if (registerForm.get('confirmPassword')?.hasError('required')) {
+        <mat-error>Confirm Password is required</mat-error>
+      }
+      @if (registerForm.hasError('passwordsMismatch')) {
+        <mat-error>Passwords must match</mat-error>
+      }
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" class="small-button">
+      Register
+    </button>
+  </form>
+</mat-card>
