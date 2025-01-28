@@ -18,7 +18,6 @@ from .serializers import (
     UserProfileSerializer
     )
 from rest_framework.decorators import api_view, permission_classes, action
-from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from urllib.parse import urljoin
 

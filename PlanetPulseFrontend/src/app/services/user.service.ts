@@ -74,6 +74,4 @@ export class UserService {
     return this.http.get('/api/polutionmap/');
   }
 
-
-
 }

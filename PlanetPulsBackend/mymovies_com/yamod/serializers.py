@@ -54,7 +54,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['profile_picture', 'profile_picture_url']
+        fields = ['profile_picture', 'profile_picture_url', 'created_at']
 
 
 class UserSerializer(serializers.ModelSerializer):

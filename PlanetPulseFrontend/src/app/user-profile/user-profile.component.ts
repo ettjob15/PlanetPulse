@@ -34,6 +34,7 @@ import { PolutionMapServiceService } from '../services/polution-map-service.serv
 export class UserProfileComponent implements OnInit {
   username: string = '';
   profilePictureUrl: string = '';
+  createdAt: string | null = null;
   pollutionHistories: any[] = [];
   co2CalculatorHistories: any[] = [];
   showChangePassword: boolean = false;
@@ -64,8 +65,10 @@ export class UserProfileComponent implements OnInit {
   public loadUserProfile() {
     this.userService.getUserProfile().subscribe(
       (profile) => {
+        console.log('Profile data:', profile);
         this.username = profile.username;
         this.profilePictureUrl = profile.profile?.profile_picture_url || '/assets/logo.png';
+        this.createdAt = profile.profile?.created_at || null;
       },
       (error) => {
         this.snackBar.open('Failed to load user profile', 'Close', {
@@ -77,8 +80,8 @@ export class UserProfileComponent implements OnInit {
 
 
   loadPolutionMap() {
-    var sortOption = ''; // Default sort option
-    var polutionIndex = '0'; // Default pollution index
+    var sortOption = ''; 
+    var polutionIndex = '0'; 
 
     this.polutionMapService.getPolutionMapUserHistory(polutionIndex, sortOption).subscribe(
       (histories) => {

@@ -4,6 +4,10 @@
     <p class="username">{{ username }}</p>
   </div>
 
+  <div> 
+    <p class="created-at">Account Created: {{ createdAt | date:'mediumDate' }}</p>
+  </div>
+
   <div class="button-group" style="display: flex; gap: 10px; flex-wrap: wrap;">
     <button *ngIf="!showChangePassword" mat-raised-button color="primary" class="small-button" (click)="toggleChangePassword()">Change Password</button>
     <button *ngIf="!showChangeProfilePicture" mat-raised-button color="primary" class="small-button" (click)="toggleChangeProfilePicture()">Change Profile Picture</button>
