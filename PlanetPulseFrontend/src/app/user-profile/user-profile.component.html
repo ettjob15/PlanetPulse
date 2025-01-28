@@ -47,7 +47,7 @@
       <div *ngIf="pollutionHistories && pollutionHistories.length > 0">
         <button mat-raised-button color="primary" class="small-button" (click)="deleteAllPollutionHistories()">Delete All</button>
         <div *ngFor="let history of pollutionHistories">
-          <p>{{ history.city }} - {{ history.dateValue }}</p>
+          <p>{{ history.city }} - {{ history.dateValue  | date:'dd MMM yyyy' }}</p>
           <button mat-raised-button color="warn" class="small-button" (click)="deletePollutionHistory(history.id)">Delete</button>
         </div>
       </div>
@@ -61,7 +61,7 @@
       <div *ngIf="co2CalculatorHistories && co2CalculatorHistories.length > 0">
         <button mat-raised-button color="primary" class="small-button" (click)="deleteAllCo2CalculatorHistories()">Delete All</button>
         <div *ngFor="let history of co2CalculatorHistories">
-          <p>{{ history.fromCity }} to {{ history.toCity }} - {{ history.date }}</p>
+          <p>{{ history.fromCity }} to {{ history.toCity }} - {{ history.date  | date:'dd MMM yyyy' }}</p>
           <button mat-raised-button color="warn" class="small-button" (click)="deleteCo2CalculatorHistory(history.id)">Delete</button>
         </div>
       </div>
