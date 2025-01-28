@@ -13,6 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatTableDataSource } from '@angular/material/table';
 import { Co2Calculator } from '../interfaces/co2-calculator';
 import { Router } from '@angular/router';
+import { PolutionMapServiceService } from '../services/polution-map-service.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -45,7 +46,8 @@ export class UserProfileComponent implements OnInit {
     private snackBar: MatSnackBar,
     private http: HttpClient,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private polutionMapService: PolutionMapServiceService
   ) {
     this.changePasswordForm = this.fb.group({
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
@@ -75,13 +77,17 @@ export class UserProfileComponent implements OnInit {
 
 
   loadPolutionMap() {
-    this.userService.getPolutionMap().subscribe(
-      (data) => {
-        this.pollutionHistories = data;
-        console.log('Polution Map Data:', data);
+    var sortOption = ''; // Default sort option
+    var polutionIndex = '0'; // Default pollution index
+
+    this.polutionMapService.getPolutionMapUserHistory(polutionIndex, sortOption).subscribe(
+      (histories) => {
+        console.log('Received pollution map history data:', histories);
+        this.pollutionHistories = histories;
       },
       (error) => {
-        this.snackBar.open('Failed to load polution map', 'Close', {
+        console.error('Error fetching pollution map history:', error);
+        this.snackBar.open('Failed to load pollution map history', 'Close', {
           duration: 3000,
         });
       }
