@@ -1,0 +1,85 @@
+/* src/app/pages/page-not-found/page-not-found.component.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background: linear-gradient(135deg, #f9f9f9, #ececec);
+  font-family: 'Roboto', sans-serif;
+}
+
+.error-content {
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.error-content i {
+  color: #ff6b6b;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.error-content i.animated.shake {
+  display: inline-block;
+  animation: shake 1s infinite;
+}
+
+@keyframes shake {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  50% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.error-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.error-content p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  color: #666;
+}
+
+.home-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  color: white;
+  background-color: #ff6b6b;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+  background-color: #37fa78;
+}
+
+@media (max-width: 600px) {
+  .error-content {
+    padding: 20px;
+  }
+
+  .error-content h1 {
+    font-size: 2rem;
+  }
+
+  .error-content p {
+    font-size: 1rem;
+  }
+
+  .home-button {
+    width: 100%;
+    padding: 10px 0;
+  }
+}

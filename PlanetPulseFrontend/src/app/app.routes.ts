@@ -8,6 +8,8 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AboutUsComponent } from './about-us/about-us.component';
 import { authGuard } from './auth.guard';
 import { authHideGuard } from './auth-hide.guard';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/polution-map', pathMatch: 'full' },
@@ -18,4 +20,8 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent ,canActivate: [authHideGuard]},
   { path: 'userprofile', component: UserProfileComponent, canActivate: [authGuard]},
   { path: 'aboutUs', component: AboutUsComponent},
+  { path: 'privacy-policy', component: PrivacyPolicyComponent},
+  { path: '**', component: NotFoundComponent },
+
+
 ];

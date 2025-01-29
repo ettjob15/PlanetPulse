@@ -1,7 +1,7 @@
 <mat-toolbar color="primary" class="custom-toolbar">
-  <img src="/assets/logo.png" alt="Logo" style="height: 80px; margin-right: auto;" />
+  <img src="/assets/logo.png" alt="Logo" routerLink="polution-map" style="height: 80px; margin-right: auto;" />
   @if(userService.isLoggedInSignal()){
-  <button mat-menu-item routerLink="userprofile" class="rounded-button">
+  <button mat-menu-item routerLink="userprofile" class="rounded-button" >
     <img [src]="profilePictureUrl || '/assets/logo.png'" alt="Profile" class="profile-img" style="height: 60px;width: 60px;"/>
   </button>
 }
@@ -38,6 +38,7 @@
   <div class="footer-links">
     <a mat-button routerLink="aboutUs">About Us</a>
     <a mat-button routerLink="imprint">Imprint</a>
+    <a mat-button routerLink="privacy-policy">Privacy Policy</a>
 
   </div>
   <!-- Copyright -->
