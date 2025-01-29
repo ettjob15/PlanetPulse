@@ -347,22 +347,18 @@ export class PolutionMapComponent {
   }
 
   fetchCityBoundaries(lat: number, lon: number, aqi: number, pollutants: Record<string, number>, addToHistory: boolean) {
-    const apiKey = 'e49b6d1e3dc341adbbf8d34997c0c5b5';
-    const url = `https://api.geoapify.com/v1/boundaries/part-of?lat=${lat}&lon=${lon}&geometry=geometry_1000&apiKey=${apiKey}`;
-
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
+    this.openWeatherService.getCityBoundaries(lat, lon).subscribe(
+      (data) => {
         if (data.features && data.features.length > 0) {
-          let selectedFeature = null;
-          let cityName = 'Brno';
+          let selectedFeature: any = null;
+          let cityName = 'Brno'; // Default city name
 
           for (const feature of data.features) {
             const categories = feature.properties.categories;
 
             if (
-              categories?.includes("administrative.neighbourhood_level") ||
-              categories?.includes("administrative.suburb_level")
+              categories?.includes('administrative.neighbourhood_level') ||
+              categories?.includes('administrative.suburb_level')
             ) {
               console.log(
                 'Lower-level boundary found (neighbourhood or suburb), skipping:',
@@ -388,10 +384,10 @@ export class PolutionMapComponent {
             this.cityNameDisplay.set(cityName);
             this.polutionMapFormGroup = new FormGroup({
               city: new FormControl(cityName),
-              coValue: new FormControl(pollutants["CO"]),
-              nh3Value: new FormControl(pollutants["NH3"]),
-              no2Value: new FormControl(pollutants["NO2"]),
-              o3Value: new FormControl(pollutants["O3"]),
+              coValue: new FormControl(pollutants['CO']),
+              nh3Value: new FormControl(pollutants['NH3']),
+              no2Value: new FormControl(pollutants['NO2']),
+              o3Value: new FormControl(pollutants['O3']),
               pm10Value: new FormControl(pollutants['PM10']),
               pm25Value: new FormControl(pollutants['PM2_5']),
               polutionIndex: new FormControl(aqi),
@@ -404,17 +400,25 @@ export class PolutionMapComponent {
         } else {
           console.error('No boundary data found for the specified location.');
         }
-      }).then(() => {
-        if (this.userService.isLoggedInSignal() && !this.cityNotFound() && addToHistory) {
-          var formButton = document.getElementById("createButton")
-          if (formButton != null) {
+
+        // Handle post-fetch actions
+        if (
+          this.userService.isLoggedInSignal() &&
+          !this.cityNotFound() &&
+          addToHistory
+        ) {
+          const formButton = document.getElementById('createButton');
+          if (formButton) {
             this.formButtonDisabled = false;
-            formButton.click();
+            (formButton as HTMLButtonElement).click();
             this.formButtonDisabled = true;
           }
         }
-      })
-      .catch((error) => console.error('Error fetching boundary data:', error));
+      },
+      (error) => {
+        console.error('Error fetching boundary data:', error);
+      }
+    );
   }
 
   addStyledBoundaryToMap(geoJsonFeature: any) {
@@ -448,7 +452,7 @@ export class PolutionMapComponent {
 
     layer.setStyle({
       weight: 3,
-      color: '#000', // Stronger border color
+      color: '#000', 
       dashArray: '',
       fillOpacity: 0.8, // More opaque when highlighted
     });
