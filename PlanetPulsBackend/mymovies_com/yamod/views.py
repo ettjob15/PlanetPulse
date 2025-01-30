@@ -171,7 +171,7 @@ class Co2CalculatorViewSet(viewsets.ModelViewSet):
     
     
     def create(self, request):
-        data = request.data
+        data = request.data.copy()
 
         # Get the ID sent from the frontend
         distance_mode_id = data.get("distanceMode_id")
@@ -215,16 +215,25 @@ class Co2CalculatorViewSet(viewsets.ModelViewSet):
 
         mode_name = distance_mode_instance.name
         emission_factor = emission_factors.get(mode_name, 0)
+        
         co2_emissions = data.get("distance", 0) * emission_factor 
-
+        co2_emissions_str = "{:.8g}".format(co2_emissions)  
+        try:
+            co2_emissions = float(co2_emissions_str) 
+        except ValueError:
+            co2_emissions = 0.0 
+            return co2_emissions
+        
         data["co2"] = co2_emissions
-        data["distanceMode"] = distance_mode_instance  
+        data["distanceMode"] = distance_mode_id
 
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
             serializer.save(user=request.user, distanceMode=distance_mode_instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
+            print("Serializer Errors:", serializer.errors)
+            print("CO2:", co2_emissions)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 

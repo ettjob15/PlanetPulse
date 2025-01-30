@@ -39,9 +39,9 @@ class Co2CalculatorHistory(models.Model):
     )
     fromCity = models.CharField(max_length=500)
     toCity = models.CharField(max_length=500)
-    distance = models.DecimalField(max_digits=10,decimal_places=3)
+    distance = models.DecimalField(max_digits=14,decimal_places=4)
     distanceMode = models.ForeignKey(DistanceMode,on_delete=models.PROTECT,related_name="mode")
-    co2 = models.DecimalField(max_digits=10,decimal_places=3)
+    co2 = models.DecimalField(max_digits=14,decimal_places=4)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

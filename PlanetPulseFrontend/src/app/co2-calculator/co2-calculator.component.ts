@@ -11,7 +11,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component'; // Update the path if needed
 import { UserService } from '../services/user.service';
 import { Co2CalculatorService } from '../services/co2-calculator-service.service';
-import { Co2Calculator, DistanceMode } from '../interfaces/co2-calculator';
+import { Co2Calculator } from '../interfaces/co2-calculator';
 import { debounceTime, Subscription, switchMap } from 'rxjs';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,6 +20,9 @@ import { MatNativeDateModule, MatPseudoCheckboxModule } from '@angular/material/
 import { Validators } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { TransportMode } from '../models/transport-mode';
+import { TransportModeDetails } from '../models/transport-mode-details';
+
 Chart.register(ChartDataLabels);
 Chart.register(...registerables);
 
@@ -222,6 +225,11 @@ export class Co2CalculatorComponent {
   }
 
 
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
   ngOnInit() {
     if (this.userService.isLoggedInSignal()) {
       this.getHistoryData();
@@ -248,7 +256,9 @@ export class Co2CalculatorComponent {
         this.applySearch(searchTerm); // Apply search filtering
       }
     });
+
   }
+
 
 
   calculateCO2(): void {
@@ -260,56 +270,28 @@ export class Co2CalculatorComponent {
     }
 
 
-    const { fromCity, toCity, distance, mode } = this.historyFormGroup.value;
-
-
-    const modeMapping: { [key: string]: number } = {
-      Domestic_flight: 39,
-      Diesel_car: 40,
-      Petrol_car: 41,
-      Short_haul_flight: 42,
-      Long_haul_flight: 43,
-      Motorbike: 44,
-      Bus: 45,
-      Bus_city: 46,
-      Plug_in_hybrid: 47,
-      Electric_car: 48,
-      National_rail: 49,
-      Tram: 50,
-      Underground: 51,
-      Ferry_foot_passenger: 52,
-      e_bike: 53
+    const { fromCity, toCity, distance, mode } = this.historyFormGroup.value as {
+      fromCity: string;
+      toCity: string;
+      distance: number;
+      mode: TransportMode;
     };
+  
+    const modeDetails = TransportModeDetails[mode];
 
-
-    const distanceModeId = modeMapping[mode];
-
-    if (!distanceModeId) {
+    if (!modeDetails) {
       this.showDialog('Invalid mode of transport selected.');
       return;
     }
 
+    const { id: distanceModeId, emissionFactor } = modeDetails;
+
     console.log("Selected Mode ID:", distanceModeId);
 
-    const emissionFactors: { [key: string]: number } = {
-      Domestic_flight: 0.246,
-      Diesel_car: 0.171,
-      Petrol_car: 0.170,
-      Short_haul_flight: 0.151,
-      Long_haul_flight: 0.148,
-      Motorbike: 0.114,
-      Bus: 0.097,
-      Bus_city: 0.079,
-      Plug_in_hybrid: 0.068,
-      Electric_car: 0.047,
-      National_rail: 0.035,
-      Tram: 0.0029,
-      Underground: 0.028,
-      Ferry_foot_passenger: 0.0019,
-      e_bike: 0.003
-    };
-    const co2Emissions = distance * (emissionFactors[mode] || 0);
+
+    const co2Emissions = distance * emissionFactor;
     var date = new Date();
+    
     if (this.userService.isLoggedInSignal()) {
       this.co2calculatorService.create({
         fromCity,
@@ -329,14 +311,14 @@ export class Co2CalculatorComponent {
         fromCity,
         toCity,
         distance,
-        distanceMode: mode,
+        distanceMode: distanceModeId,
         co2: co2Emissions,
         date: date
       });
       this.dataSource.data = this.history;
     } 
   }
-  getEmissionFactor(mode: string): number | undefined {
+/*   getEmissionFactor(mode: string): number | undefined {
     const emissionFactors: { [key: string]: number } = {
       car: 0.2,
       bus: 0.05,
@@ -350,7 +332,7 @@ export class Co2CalculatorComponent {
 
     return emissionFactors[mode];
   }
-
+ */
 
   resetForm(): void {
     this.historyFormGroup.reset();

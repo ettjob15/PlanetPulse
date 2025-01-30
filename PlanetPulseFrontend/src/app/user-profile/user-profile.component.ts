@@ -269,6 +269,7 @@ export class UserProfileComponent implements OnInit {
   deleteAccount() {
     if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
       this.logoutAndDeleteAccount();
+      this.userService.logout()
     }
   }
 
@@ -278,7 +279,7 @@ export class UserProfileComponent implements OnInit {
         this.snackBar.open('Account deleted successfully', 'Close', {
           duration: 3000,
         });
-        this.userService.logout();
+       /*  this.userService.logout(); */
       },
       (error) => {
         this.snackBar.open('Failed to delete account', 'Close', {
